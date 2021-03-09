@@ -5,13 +5,10 @@ spring:
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    show-sql: true
+    #这里如果为true,则表示在每次查询数据库的时候，自动打印查询的语句
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
 server:
   port: 8181
-
-  spring:
-    jpa:
-      open-in-view: false
