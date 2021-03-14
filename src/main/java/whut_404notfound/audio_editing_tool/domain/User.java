@@ -1,4 +1,4 @@
-package whut_404notfound.audio_editing_tool.entity;
+package whut_404notfound.audio_editing_tool.domain;
 
 import lombok.Data;
 
@@ -20,8 +20,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String name;
-    private String pwd;
+    private String username;
+    private String password;
 
     public Integer getId() {
         return id;
@@ -31,19 +31,19 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String name) {
+        this.username = name;
     }
 
-    public String getPwd() {
-        return pwd;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
+    public void setPassword(String pwd) {
+        this.password = pwd;
     }
 }

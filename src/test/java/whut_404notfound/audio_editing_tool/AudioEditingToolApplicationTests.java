@@ -3,8 +3,8 @@ package whut_404notfound.audio_editing_tool;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import whut_404notfound.audio_editing_tool.entity.Modify;
-import whut_404notfound.audio_editing_tool.entity.VideoPart;
+import whut_404notfound.audio_editing_tool.domain.Modify;
+import whut_404notfound.audio_editing_tool.domain.VideoPart;
 import whut_404notfound.audio_editing_tool.repository.UserRepository;
 
 import java.sql.Time;
@@ -17,7 +17,7 @@ class AudioEditingToolApplicationTests {
 
     @Test
     void contextLoads() {
-        System.out.println(userRepository.findUserByNameAndPwd("13300000000", "123456"));
+        System.out.println(userRepository.findUserByUsernameAndPassword("13300000000", "123456"));
     }
 
     @Test

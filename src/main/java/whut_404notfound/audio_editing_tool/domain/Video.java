@@ -1,4 +1,4 @@
-package whut_404notfound.audio_editing_tool.entity;
+package whut_404notfound.audio_editing_tool.domain;
 
 import lombok.Data;
 
