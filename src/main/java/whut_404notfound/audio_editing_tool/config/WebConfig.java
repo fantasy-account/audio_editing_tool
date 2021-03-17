@@ -1,9 +1,13 @@
 package whut_404notfound.audio_editing_tool.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import whut_404notfound.audio_editing_tool.interceptor.CorsFilter;
+import whut_404notfound.audio_editing_tool.interceptor.CorsInterceptor;
 import whut_404notfound.audio_editing_tool.interceptor.LoginInterceptor;
 
 /**
@@ -15,20 +19,15 @@ import whut_404notfound.audio_editing_tool.interceptor.LoginInterceptor;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowCredentials(false)
-                .maxAge(3600)
-                .allowedHeaders("*");
-    }
-
-    // 登录拦截器
-    /*@Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns("/", "/login", "/error");
-    }*/
+    }
+
+    @Bean
+    public FilterRegistrationBean corsFilter(){
+        return new FilterRegistrationBean(new CorsFilter());
+    }
+
 }

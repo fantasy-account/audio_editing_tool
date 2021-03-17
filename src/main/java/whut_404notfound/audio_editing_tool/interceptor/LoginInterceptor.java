@@ -1,6 +1,8 @@
 package whut_404notfound.audio_editing_tool.interceptor;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.servlet.HandlerInterceptor;
+import whut_404notfound.audio_editing_tool.domain.BaseResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,8 +21,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         if(null==request.getSession().getAttribute(SESSION_KEY_USER)){
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().println("请先登录");
-            System.out.println(request.getServletPath());
+            ObjectMapper mapper=new ObjectMapper();
+            response.getWriter().println(mapper.writeValueAsString(new BaseResponse<Void>(HttpServletResponse.SC_FORBIDDEN,"请先登录")));
             return false;
         }
         return true;

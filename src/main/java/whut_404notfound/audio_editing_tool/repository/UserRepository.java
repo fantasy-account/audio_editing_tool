@@ -9,5 +9,5 @@ import java.util.List;
  * 数据访问层（最底层）。数据库查询接口类，从此处开始查询数据库，并返回给上层
  */
 public interface UserRepository extends JpaRepository<User,Integer> {
-   List<User> findUserByUsernameAndPassword(String name, String pwd);
+   List<User> findUserByUsernameAndPassword(String username, String password);
 }

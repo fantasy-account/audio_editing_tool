@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author <a href="mailto:873406454@qq.com">Li Hangfei</a>
  * @date 2021/3/14
  */
-@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "IllegalRequestParamException")
+//@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "IllegalRequestParamException")
 public class IllegalRequestParamException extends IllegalArgumentException {
-    public IllegalRequestParamException() {
+    public IllegalRequestParamException(){
+    }
+    public IllegalRequestParamException(String message) {
+        super(message);
     }
 }

@@ -1,4 +1,4 @@
-**根目录：com.springboot**
+##根目录：com.springboot
 
 1. 工程启动类(`ApplicationServer.java`)置于`com.springboot.build`包下
 2. 实体类(`domain`)置于`com.springboot.domain`
@@ -11,6 +11,11 @@
 8. 配置信息类(`config`)置于`com.springboot.config`
 9. 数据传输类(`vo`)置于`com.springboot.vo`
 
-**配置文件**
+##配置文件
+**application.yml**
 
-application.yml
+通过浏览器输入/druid访问Druid  
+账号admin,密码123456
+
+
+

@@ -4,10 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import whut_404notfound.audio_editing_tool.domain.Modify;
+import whut_404notfound.audio_editing_tool.domain.User;
 import whut_404notfound.audio_editing_tool.domain.VideoPart;
 import whut_404notfound.audio_editing_tool.repository.UserRepository;
 
 import java.sql.Time;
+import java.util.UUID;
 
 
 @SpringBootTest
@@ -17,7 +19,13 @@ class AudioEditingToolApplicationTests {
 
     @Test
     void contextLoads() {
-        System.out.println(userRepository.findUserByUsernameAndPassword("13300000000", "123456"));
+        System.out.println(userRepository.findUserByUsernameAndPassword("1372011376", "li001015fei"));
+//        User user=new User();
+//        user.setUsername("2");
+//        user.setPassword("2");
+//        System.out.println(userRepository.saveAndFlush(user));
+        //System.out.println(UUID.randomUUID().toString().replace("-","").length());
+
     }
 
     @Test
