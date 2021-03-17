@@ -8,6 +8,7 @@ import whut_404notfound.audio_editing_tool.domain.User;
 import whut_404notfound.audio_editing_tool.domain.VideoPart;
 import whut_404notfound.audio_editing_tool.repository.UserRepository;
 
+import javax.sql.DataSource;
 import java.sql.Time;
 import java.util.UUID;
 
@@ -17,9 +18,13 @@ class AudioEditingToolApplicationTests {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    DataSource dataSource;
+
     @Test
     void contextLoads() {
-        System.out.println(userRepository.findUserByUsernameAndPassword("1372011376", "li001015fei"));
+//        System.out.println(dataSource.getClass());
+//        System.out.println(userRepository.findUserByUsernameAndPassword("13720113769", "li001015fei"));
 //        User user=new User();
 //        user.setUsername("2");
 //        user.setPassword("2");
