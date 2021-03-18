@@ -32,6 +32,7 @@ public class CorsFilter implements Filter {
             "Accept-Encoding",
             "Access-Control-Request-Method",
             "Access-Control-Request-Header",
+            "token",
             "Pragma"
     );
 
@@ -45,6 +46,7 @@ public class CorsFilter implements Filter {
         httpServletResponse.setHeader("Access-Control-Allow-Origin", Optional.ofNullable(httpServletRequest.getHeader("origin")).orElse("*"));
         httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
         httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS");
+        httpServletResponse.setHeader("Access-Control-Expose-Headers","token");
         List<String> allowHeaders = new LinkedList<>(DEFAULT_SUPPORTED_REQUEST_HEADERS);
         Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
         while (headerNames.hasMoreElements()) {

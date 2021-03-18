@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import whut_404notfound.audio_editing_tool.interceptor.CorsFilter;
 import whut_404notfound.audio_editing_tool.interceptor.CorsInterceptor;
 import whut_404notfound.audio_editing_tool.interceptor.LoginInterceptor;
+import whut_404notfound.audio_editing_tool.interceptor.TokenInterceptor;
 
 /**
  * Web配置类
@@ -21,6 +22,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns("/", "/login", "/error");
+
+        registry.addInterceptor(new TokenInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns("/", "/login", "/error");
     }

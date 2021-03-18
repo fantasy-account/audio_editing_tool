@@ -10,6 +10,7 @@ import whut_404notfound.audio_editing_tool.domain.BaseResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import static whut_404notfound.audio_editing_tool.constant.Constant.UPLOAD_FILE_SAVE_ROOT_PATH;
 
@@ -25,7 +26,6 @@ public class UploadController {
     @ResponseBody
     public BaseResponse receiveFileFromBrowser(@RequestBody MultipartFile file) throws IOException {
         if (!file.isEmpty()) {
-
             // ==================================================
             // TODO 在这里完成对文件类型与大小判断，简单后缀判断不安全
             // TODO 可更改Constant.java下的全局常量RECEIVE_FILE_SUFFIXS

@@ -13,6 +13,7 @@ public class Constant {
     public static final String SESSION_KEY_USER = "session_user_id";
     public static final String UPLOAD_FILE_SAVE_ROOT_PATH = "E:/upload/originalVideos/";
     public static final List<String > RECEIVE_FILE_SUFFIXS= Arrays.asList(".jpg",".mp4");
+    public static final String JWT_SECRET="whut404notfound_audio_editing_tool";
 
     private Constant() {
     }

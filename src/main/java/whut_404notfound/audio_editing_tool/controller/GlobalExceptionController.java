@@ -1,5 +1,6 @@
 package whut_404notfound.audio_editing_tool.controller;
 
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,18 +23,22 @@ import java.util.Optional;
 public class GlobalExceptionController {
     /**
      * 请求参数异常处理，状态码400
+     * IllegalRequestParamException 为自定义的参数异常，对应某个对象或字段Null或“”
+     * HttpMessageNotReadableException为springboot抛出的异常，对应无法解析为想要的对象，可换为父类型
      */
-    @ExceptionHandler(IllegalRequestParamException.class)
+    @ExceptionHandler({IllegalRequestParamException.class, HttpMessageNotReadableException.class})
     @ResponseBody
-    public BaseResponse IllegalRequestParamExceptionHandler(IllegalRequestParamException e){
+    public BaseResponse IllegalRequestParamExceptionHandler(Exception e){
         System.out.println(e);
-        return new BaseResponse(HttpServletResponse.SC_BAD_REQUEST,e.getMessage());
+        return new BaseResponse(HttpServletResponse.SC_BAD_REQUEST,
+                e instanceof HttpMessageNotReadableException?"HttpMessageNotReadable":e.getMessage());
     }
 
     /**
-     * 404异常，暂时放这里，系统不会调用，可通过自定义“/error”实现返回所需body
+     * 404异常，默认底层不会抛出，通过更改配置文件实现该异常的捕获
      */
     @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseBody
     public BaseResponse noHandlerFound(NoHandlerFoundException e){
         System.out.println(e);
         return new BaseResponse(HttpServletResponse.SC_NOT_FOUND,Optional.ofNullable(e.getMessage()).orElse("请检查url是否正确"));
@@ -46,6 +51,9 @@ public class GlobalExceptionController {
     @ResponseBody
     public BaseResponse defaultExceptionHandler(Exception e){
         System.out.println(e);
+        for(StackTraceElement stackTraceElement:e.getStackTrace()) {
+            System.out.println(stackTraceElement);
+        }
         return new BaseResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Optional.ofNullable(e.getMessage()).orElse("服务器未知异常"));
     }
 }

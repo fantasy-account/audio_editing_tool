@@ -50,6 +50,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!--JWT解析库-->
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+        </dependency>
+
         <!-- 第三方插件,2020版IDEA自带该插件,可根据需要移除 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
