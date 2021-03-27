@@ -13,16 +13,22 @@ import java.util.Arrays;
 public class VideoPart implements Serializable {
     private static final long serialVersionUID = 4359709211352400087L;
     private Integer partNum;//该对象总共有多少个时间片
-    private Integer num = 0;//该对象目前有多少个时间片
+    private Integer num = 0;//该对象目前操作的时间片
     private Time[] startTime;//数组保存所有的起始时间片信息
-    private Time[] endTime;//数组保存所有的起始时间片信息
+    private Time[] endTime;//数组保存所有的结束时间片信息
     private String[] content;//数组保存某时间片内的文字信息,注：修改后的时间片对象，保存的也是修改后的文字
+    private String[] imageUrl;//视频片封面路径
 
-    public VideoPart(Integer n, Time[] startTime, Time[] endTime, String[] content) {
-        this.partNum = n;
+    public VideoPart(Integer partNum) {
+        Time[] startTime = new Time[partNum];
+        Time[] endTime = new Time[partNum];
+        String[] content = new String[partNum];
+        String[] imageUrl = new String[partNum];
+        this.partNum = partNum;
         this.startTime = startTime;
         this.endTime = endTime;
         this.content = content;
+        this.imageUrl = imageUrl;
     }
 
     public Integer getPartNum() {
@@ -57,16 +63,27 @@ public class VideoPart implements Serializable {
         this.content[num] = content;
     }
 
-    public void addNum(){
+    public void addNum() {
         this.num++;
     }
+
+    public String[] getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String[] imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @Override
     public String toString() {
         return "VideoPart{" +
                 "partNum=" + partNum +
+                ", num=" + num +
                 ", startTime=" + Arrays.toString(startTime) +
                 ", endTime=" + Arrays.toString(endTime) +
                 ", content=" + Arrays.toString(content) +
+                ", imageUrl=" + Arrays.toString(imageUrl) +
                 '}';
     }
 }

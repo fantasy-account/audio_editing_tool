@@ -19,7 +19,7 @@ import static whut_404notfound.audio_editing_tool.constant.Constant.SESSION_KEY_
 public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("登录拦截器中"+request.getSession(false)+"---");
+        //System.out.println("登录拦截器中"+request.getSession(false)+"---");
         if(null==request.getSession().getAttribute(SESSION_KEY_USER)){
             response.setContentType("application/json;charset=UTF-8");
             //response.setStatus(HttpServletResponse.SC_FORBIDDEN);

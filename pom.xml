@@ -13,7 +13,7 @@
     <groupId>whut_404NotFound</groupId>
     <artifactId>audio_editing_tool</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>audio_editing_tool</name>
+    <username>audio_editing_tool</username>
     <description>Demo project for Spring Boot</description>
 
     <properties>

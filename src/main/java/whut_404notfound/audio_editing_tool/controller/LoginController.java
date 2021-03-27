@@ -38,21 +38,20 @@ public class LoginController {
 
     @PostMapping("/login")
     @ResponseBody
-    public BaseResponse login(@RequestBody User user, HttpSession httpSession, HttpServletResponse response) throws Exception{
-        if(null==user|| Optional.ofNullable(user.getUsername()).orElse("").isEmpty()
-                ||Optional.ofNullable(user.getPassword()).orElse("").isEmpty()){
+    public BaseResponse login(@RequestBody User user, HttpSession httpSession, HttpServletResponse response) throws Exception {
+        if (null == user || Optional.ofNullable(user.getUsername()).orElse("").isEmpty()
+                || Optional.ofNullable(user.getPassword()).orElse("").isEmpty()) {
             throw new IllegalRequestParamException("用户登录参数缺失");
         }
 
-        List<User> userList=userRepository.findUserByUsernameAndPassword(user.getUsername(), user.getPassword());
-        if(!userList.isEmpty()){
-
-            System.out.println(userList.get(0).getId());
-            String token=generateTokenByUserId(userList.get(0).getId().toString());
+        List<User> userList = userRepository.findUserByUsernameAndPassword(user.getUsername(), user.getPassword());
+        if (!userList.isEmpty()) {
+            System.out.println("当前登录用户的id是:" + userList.get(0).getId());
+            String token = generateTokenByUserId(userList.get(0).getId().toString());
             response.setHeader("token", Optional.ofNullable(token).orElse(""));
 
-            httpSession.setAttribute(SESSION_KEY_USER,userList.get(0).getId());
-            System.out.println("登录成功产生的"+httpSession.getId());
+            httpSession.setAttribute(SESSION_KEY_USER, userList.get(0).getId());
+            System.out.println("登录成功产生的session:" + httpSession.getId());
             return new BaseResponse(HttpServletResponse.SC_OK, "登录成功");
         }
 
@@ -68,6 +67,6 @@ public class LoginController {
      * @throws JOSEException
      */
     private String generateTokenByUserId(String id) throws JOSEException {
-        return JsonWebTokenUtil.generateTokenByHMAC(id,JWT_SECRET);
+        return JsonWebTokenUtil.generateTokenByHMAC(id, JWT_SECRET);
     }
 }

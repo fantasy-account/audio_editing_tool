@@ -21,12 +21,30 @@ public class Video {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer videoId;
     private String videoName;
-    private String videoSize;
+    private long videoSize;
     private Date addTime;
     private Integer videoDuration;
+    private String videoUrl;
     private String imageUrl;
     private Integer userId;
     private Integer isModify;
+
+    //默认构造函数不能删掉，不然数据库查询会报错
+    public Video() {
+
+    }
+
+    public Video(String videoName, long videoSize, Integer videoDuration, String videoUrl, String imageUrl, Integer userId) {
+        this.videoName = videoName;
+        this.videoSize = videoSize;
+        Date addTime = new Date();
+        this.addTime = addTime;
+        this.videoDuration = videoDuration;
+        this.videoUrl = videoUrl;
+        this.imageUrl = imageUrl;
+        this.userId = userId;
+        this.isModify = 0;
+    }
 
     public Integer getVideoId() {
         return videoId;
@@ -44,11 +62,11 @@ public class Video {
         this.videoName = videoName;
     }
 
-    public String getVideoSize() {
+    public long getVideoSize() {
         return videoSize;
     }
 
-    public void setVideoSize(String videoSize) {
+    public void setVideoSize(long videoSize) {
         this.videoSize = videoSize;
     }
 
@@ -57,7 +75,7 @@ public class Video {
     }
 
     public void setAddTime() {
-        Date addTime=new Date();
+        Date addTime = new Date();
         this.addTime = addTime;
     }
 
@@ -71,6 +89,14 @@ public class Video {
 
     public void setVideoDuration(Integer videoDuration) {
         this.videoDuration = videoDuration;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 
     public String getImageUrl() {
