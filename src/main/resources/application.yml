@@ -1,4 +1,9 @@
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 200MB
   datasource:
     url: jdbc:mysql://localhost:3306/document?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: root

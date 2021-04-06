@@ -8,12 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 import whut_404notfound.audio_editing_tool.domain.BaseResponse;
 import whut_404notfound.audio_editing_tool.domain.Video;
 import whut_404notfound.audio_editing_tool.repository.VideoRepository;
+import whut_404notfound.audio_editing_tool.service.VideoService;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
 import static whut_404notfound.audio_editing_tool.constant.Constant.*;
 
@@ -49,17 +49,24 @@ public class UploadController {
             System.out.println(uploadVideo);
 
             String filePath = UPLOAD_FILE_SAVE_ROOT_PATH +uploadVideo.getVideoId()+"/"+file.getOriginalFilename();
-//            File saveFile = new File(filePath);
-//            if (!saveFile.getParentFile().exists()) {
-//                saveFile.getParentFile().mkdirs();
-//            }
-//            file.transferTo(saveFile);
+            File saveFile = new File(filePath);
+            if (!saveFile.getParentFile().exists()) {
+                saveFile.getParentFile().mkdirs();
+            }
+            file.transferTo(saveFile);
 
-            System.out.println(filePath);
+            //System.out.println(filePath);
 
             httpSession.setAttribute(SESSION_KEY_VIDEO, uploadVideo.getVideoId());//这里的是视频编号，存数据库是会返回这个ID
             System.out.println("视频id保存到session:" + httpSession.getId());
 
+            String outputPath=SRC_FILE_SAVE_ROOT_PATH +uploadVideo.getVideoId()+"/";
+            File outputFile = new File(outputPath+"1.txt");
+            if (!outputFile.getParentFile().exists()) {
+                outputFile.getParentFile().mkdirs();
+            }
+            //System.out.println(outputPath);
+            VideoService.cuttingVideo(filePath,outputPath);
         }
         return new BaseResponse(HttpServletResponse.SC_OK,"上传成功");
     }

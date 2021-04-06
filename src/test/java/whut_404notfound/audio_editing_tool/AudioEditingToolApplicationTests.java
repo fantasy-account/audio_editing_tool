@@ -9,6 +9,8 @@ import whut_404notfound.audio_editing_tool.domain.VideoPart;
 import whut_404notfound.audio_editing_tool.repository.ModifyRepository;
 import whut_404notfound.audio_editing_tool.repository.UserRepository;
 import whut_404notfound.audio_editing_tool.repository.VideoRepository;
+import whut_404notfound.audio_editing_tool.service.VideoService;
+import whut_404notfound.audio_editing_tool.util.VideoUtil;
 
 import javax.sql.DataSource;
 import java.sql.Time;
@@ -26,6 +28,9 @@ class AudioEditingToolApplicationTests {
     private ModifyRepository modifyRepository;
     @Autowired
     DataSource dataSource;
+
+
+    public VideoService videoService;
 
     @Test
     void contextLoads() {
@@ -52,7 +57,7 @@ class AudioEditingToolApplicationTests {
             testVideoPart.addNum();
         }
         System.out.println("这里是形成的视频片对象" + testVideoPart);
-        Modify testModify = new Modify(3, 1, 3, 2, 500, testVideoPart, testVideoPart);
+        Modify testModify = new Modify(1, 1, 3, 2, 500, testVideoPart, testVideoPart);
         System.out.println("保存的返回结果" + modifyRepository.saveAndFlush(testModify));
 
     }
@@ -78,5 +83,13 @@ class AudioEditingToolApplicationTests {
     void saveModify() {
         Modify hhh = modifyRepository.findModifyByVideoId(3).get(0);
         System.out.println(hhh);
+    }
+
+    @Test
+    void qiepianceshi() throws Exception{
+        String a="D:/upload/originalVideos/11/bb.mp4";
+        String b="D:/upload/videoResources/6/";
+        VideoService.cuttingVideo(a,b);
+       // VideoUtil.mp4ToCut1(a,b,"60");
     }
 }
