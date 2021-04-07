@@ -17,17 +17,20 @@ public class VideoPart implements Serializable {
     private Time[] startTime;//数组保存所有的起始时间片信息
     private Time[] endTime;//数组保存所有的结束时间片信息
     private String[] content;//数组保存某时间片内的文字信息,注：修改后的时间片对象，保存的也是修改后的文字
+    private String[] videoPartUrl;//视频片路径
     private String[] imageUrl;//视频片封面路径
 
     public VideoPart(Integer partNum) {
         Time[] startTime = new Time[partNum];
         Time[] endTime = new Time[partNum];
         String[] content = new String[partNum];
+        String[] videoPartUrl = new String[partNum];
         String[] imageUrl = new String[partNum];
         this.partNum = partNum;
         this.startTime = startTime;
         this.endTime = endTime;
         this.content = content;
+        this.videoPartUrl=videoPartUrl;
         this.imageUrl = imageUrl;
     }
 
@@ -67,13 +70,15 @@ public class VideoPart implements Serializable {
         this.num++;
     }
 
+    public String[] getVideoPartUrl() { return videoPartUrl; }
+
+    public void setVideoPartUrl(String videoPartUrl) { this.videoPartUrl[num] = videoPartUrl; }
+
     public String[] getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(String[] imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+    public void setImageUrl(String imageUrl) { this.imageUrl[num] = imageUrl; }
 
     @Override
     public String toString() {
@@ -83,6 +88,7 @@ public class VideoPart implements Serializable {
                 ", startTime=" + Arrays.toString(startTime) +
                 ", endTime=" + Arrays.toString(endTime) +
                 ", content=" + Arrays.toString(content) +
+                ", videoPartUrl=" + Arrays.toString(videoPartUrl) +
                 ", imageUrl=" + Arrays.toString(imageUrl) +
                 '}';
     }

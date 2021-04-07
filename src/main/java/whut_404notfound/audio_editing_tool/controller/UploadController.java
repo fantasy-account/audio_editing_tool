@@ -1,5 +1,6 @@
 package whut_404notfound.audio_editing_tool.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import whut_404notfound.audio_editing_tool.domain.BaseResponse;
 import whut_404notfound.audio_editing_tool.domain.Video;
 import whut_404notfound.audio_editing_tool.repository.VideoRepository;
-import whut_404notfound.audio_editing_tool.service.VideoService;
+import whut_404notfound.audio_editing_tool.service.UploadService;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,6 +28,9 @@ import static whut_404notfound.audio_editing_tool.constant.Constant.*;
 public class UploadController {
 
     final VideoRepository videoRepository;
+
+    @Autowired
+    private UploadService uploadService;
 
     public UploadController(VideoRepository videoRepository) {
         this.videoRepository = videoRepository;
@@ -55,7 +59,6 @@ public class UploadController {
             }
             file.transferTo(saveFile);
 
-            //System.out.println(filePath);
 
             httpSession.setAttribute(SESSION_KEY_VIDEO, uploadVideo.getVideoId());//这里的是视频编号，存数据库是会返回这个ID
             System.out.println("视频id保存到session:" + httpSession.getId());
@@ -65,8 +68,8 @@ public class UploadController {
             if (!outputFile.getParentFile().exists()) {
                 outputFile.getParentFile().mkdirs();
             }
-            //System.out.println(outputPath);
-            VideoService.cuttingVideo(filePath,outputPath);
+
+            uploadService.cuttingVideo(userId,uploadVideo.getVideoId(),filePath,outputPath);
         }
         return new BaseResponse(HttpServletResponse.SC_OK,"上传成功");
     }

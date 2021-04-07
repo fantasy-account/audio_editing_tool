@@ -39,7 +39,6 @@ public class EditController {
         if(!modifyList.isEmpty()){
             Modify modify=modifyList.get(0);
             System.out.println(modify);
-
             return new BaseResponse(HttpServletResponse.SC_OK, "视频分片成功，具体信息见data",modify);
         }
         // 状态码404

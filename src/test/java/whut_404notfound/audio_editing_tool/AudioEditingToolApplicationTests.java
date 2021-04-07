@@ -9,8 +9,7 @@ import whut_404notfound.audio_editing_tool.domain.VideoPart;
 import whut_404notfound.audio_editing_tool.repository.ModifyRepository;
 import whut_404notfound.audio_editing_tool.repository.UserRepository;
 import whut_404notfound.audio_editing_tool.repository.VideoRepository;
-import whut_404notfound.audio_editing_tool.service.VideoService;
-import whut_404notfound.audio_editing_tool.util.VideoUtil;
+import whut_404notfound.audio_editing_tool.service.UploadService;
 
 import javax.sql.DataSource;
 import java.sql.Time;
@@ -30,7 +29,8 @@ class AudioEditingToolApplicationTests {
     DataSource dataSource;
 
 
-    public VideoService videoService;
+    @Autowired
+    private UploadService uploadService;
 
     @Test
     void contextLoads() {
@@ -81,15 +81,38 @@ class AudioEditingToolApplicationTests {
 
     @Test
     void saveModify() {
-        Modify hhh = modifyRepository.findModifyByVideoId(3).get(0);
+        Modify hhh = modifyRepository.findModifyByVideoId(14).get(0);
         System.out.println(hhh);
     }
 
     @Test
     void qiepianceshi() throws Exception{
-        String a="D:/upload/originalVideos/11/bb.mp4";
-        String b="D:/upload/videoResources/6/";
-        VideoService.cuttingVideo(a,b);
+        String a="D:/upload/originalVideos/14/bb.mp4";
+        String b="D:/upload/videoResources/14/";
+        uploadService.cuttingVideo(1,14,a,b);
        // VideoUtil.mp4ToCut1(a,b,"60");
     }
+
+    @Test
+    void updateTest(){
+        //String a="D:/upload/originalVideos/11/bb.mp4";
+       // String b="D:/upload/videoResources/11/";
+        int videoId=13;
+        int duration=434;
+        String videoInputPath="D:/upload/originalVideos/12/bb.mp4";
+        String videoOutputPath="D:/upload/videoResources/12/";
+        System.out.println(videoRepository.updateVideo(videoId,duration,videoInputPath,videoOutputPath+"image.jpg"));
+    }
+
+    @Test
+    void modifyTest(){
+        int part_num=434/60+1;//7+1=8
+        for(int i=0;i<part_num;i++){
+            if(i<10){
+                String n="0"+i;
+                System.out.println(n);
+            }
+        }
+    }
+
 }

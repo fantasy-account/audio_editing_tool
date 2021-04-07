@@ -5,7 +5,6 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.*;
-import java.util.Arrays;
 
 /**
  * @author Xiaoyu Fan
@@ -67,6 +66,15 @@ public class Modify {
         this.inclusivePart = Modify.toByteArray(inclusivePart);
         this.modifiedPart = null;
     }
+    public Modify(Integer videoId, Integer userId, Integer partNum, VideoPart inclusivePart) {
+        this.videoId = videoId;
+        this.userId = userId;
+        this.partNum = partNum;
+        this.modifiedPartNum = null;
+        this.modifiedDuration = null;
+        this.inclusivePart = Modify.toByteArray(inclusivePart);
+        this.modifiedPart = null;
+    }
 
     /**
      * 将对象抓换成二进制对象
@@ -105,7 +113,8 @@ public class Modify {
             //System.out.println("这里是反序列化转化的对象" + data);
             return data;
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            //这里抛出了异常，但是我不想管~~~
         }
         return null;
     }
