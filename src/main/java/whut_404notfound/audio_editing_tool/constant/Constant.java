@@ -17,7 +17,7 @@ public class Constant {
     public static final List<String > RECEIVE_FILE_SUFFIXS= Arrays.asList(".jpg",".mp4");
     public static final String JWT_SECRET="whut404notfound_audio_editing_tool";
 
-    public static final Integer PART_DURATION=50;
+    public static final Integer PART_DURATION=10;
     private Constant() {
     }
 }

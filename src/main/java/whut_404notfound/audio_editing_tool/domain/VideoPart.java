@@ -42,6 +42,14 @@ public class VideoPart implements Serializable {
         this.partNum = partNum;
     }
 
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
+    }
+
     public Time[] getStartTime() {
         return startTime;
     }

@@ -6,8 +6,12 @@ import whut_404notfound.audio_editing_tool.domain.Modify;
 import whut_404notfound.audio_editing_tool.domain.VideoPart;
 import whut_404notfound.audio_editing_tool.repository.ModifyRepository;
 import whut_404notfound.audio_editing_tool.repository.VideoRepository;
+import whut_404notfound.audio_editing_tool.util.Transform;
 import whut_404notfound.audio_editing_tool.util.VideoUtil;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.sql.Time;
 import java.util.List;
 
@@ -27,9 +31,12 @@ public class UploadService {
     @Autowired
     private ModifyRepository modifyRepository;
 
+    @Autowired
+    private Transform transform;
+
     public void cuttingVideo(Integer userId, Integer videoId, String videoInputPath, String videoOutputPath) {
         try {
-            VideoUtil.mp4ToCut1(videoInputPath, videoOutputPath, PART_DURATION+"");
+            VideoUtil.mp4ToCut3(videoInputPath, videoOutputPath, PART_DURATION);
             int duration=VideoUtil.getVideoTime(videoInputPath);
 
             VideoUtil.changeToJpg(videoInputPath,videoOutputPath+"image.jpg",0,0);
@@ -42,9 +49,29 @@ public class UploadService {
             System.out.println("video表数据导入完毕");
 
             //int duration=434;
-            int part_num = duration / PART_DURATION + 1;//7+1=8
+            int part_num = duration / PART_DURATION;//7+1=8
             VideoPart videoPart = new VideoPart(part_num);
-
+            String result=null;
+            Integer result1=0;
+            Integer result2=0;
+//            //////////////////////////////////////////////////////////////////////////////////
+//            FileInputStream fis = null;
+//            InputStreamReader isr = null;
+//            BufferedReader br = null;
+//            String str = "";
+//            //String str1 = "";
+//            String[] str2 = new String[part_num];
+//            fis = new FileInputStream("D:/IntelliJ IDEA 2019.1/workspace/audio_editing_tool/src/input.txt");// FileInputStream
+//            // 从文件系统中的某个文件中获取字节
+//            isr = new InputStreamReader(fis);// InputStreamReader 是字节流通向字符流的桥梁,
+//            br = new BufferedReader(isr);// 从字符输入流中读取文件中的内容,封装了一个new InputStreamReader的对象
+//            for(int i=0;i<part_num;i++){
+//                if((str = br.readLine()) != null){
+//                    str2[i]=str;
+//                }
+//            }
+//
+//            //////////////////////////////////////////////////////////////////////////
             for (int i = 0; i < part_num; i++) {
                 int hh = i * PART_DURATION / 3600;
                 int mm = (i * PART_DURATION % 3600) / 60;
@@ -72,7 +99,18 @@ public class UploadService {
                 VideoUtil.changeToJpg(videoOutputPath+n+".mp4",videoOutputPath+n+".jpg",0,0);
                 videoPart.setVideoPartUrl(videoOutputPath+n+".mp4");
                 videoPart.setImageUrl(videoOutputPath + n + ".jpg");
-                videoPart.setContent("第"+n+"段文字");
+                VideoUtil.changeFileToWav(videoOutputPath+n+".mp4",videoOutputPath+n+".wav");
+
+                result=transform.Audio2Character(videoOutputPath+n+".wav", videoOutputPath+n+".wav");
+                try {
+                    result1 = result.indexOf(":[\"") + 3;
+                    result2 = result.indexOf("\"],");
+                    videoPart.setContent(result.substring(result1, result2));
+                }catch (Exception e){
+                    videoPart.setContent("在第"+i+"段语音转文字的时候出现了问题");
+                }
+
+                //videoPart.setContent(str2[i]);
                 videoPart.addNum();
             }
             System.out.println("这里已经生成好了，除了教师文字的视频片videoPart");
@@ -86,7 +124,7 @@ public class UploadService {
 //            System.out.println(modifyList);
 
         } catch (Exception e) {
-            System.out.println("videoService出现问题");
+            System.out.println("uploadService出现问题");
             System.out.println(e.getMessage());
         }
     }

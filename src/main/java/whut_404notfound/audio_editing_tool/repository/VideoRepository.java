@@ -15,4 +15,9 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
     @Modifying(clearAutomatically = true)
     @Query(value = "update video set video_duration=?2 ,video_url=?3 ,image_url=?4 where video_id=?1", nativeQuery = true)
     int updateVideo(Integer video_id, Integer video_duration, String video_url, String image_url);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(value = "update video set is_modify=1  where video_id=?1", nativeQuery = true)
+    int videoHasBeenModified(Integer video_id);
 }

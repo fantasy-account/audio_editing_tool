@@ -6,8 +6,7 @@ package whut_404notfound.audio_editing_tool.util;
  * @create 2021-03-18 17:07
  */
 /*
- * 视频中获取音频文件videoToAudio(final String audioInputPath,final String videoOutputPath)
- * 视频音频合并convetor(final String videoInputPath, final String audioInputPath, final String videoOutPath)
+* 视频音频合并convetor(final String videoInputPath, final String audioInputPath, final String videoOutPath)
  * 音频文件转wav格式 changeFileToWav(final String audioInputPath, final String audioOutputPath)
  * Wav音频文件转pcm格式changeWavToPcm(final String audioInputPath, final String audioOutputPath)
  * 按频率视频切割mp4ToCut1(String videoInputPath, String videoOutputPath,String frequencyTime)
@@ -20,30 +19,16 @@ package whut_404notfound.audio_editing_tool.util;
  */
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
 
 /**
  * 视频中获取音频文件
@@ -115,13 +100,12 @@ public class VideoUtil {
 
     /**
      * 音频文件转wav格式
-     *
-     * @param audioInputPath
+     * @param fileInputPath
      * @param audioOutputPath
      * @return
      * @throws Exception
      */
-    public static void changeFileToWav(final String audioInputPath, final String audioOutputPath) throws Exception {
+    public static void changeFileToWav(final String fileInputPath, final String audioOutputPath) throws Exception {
         Process process = null;
         try {
             //执行ffmpeg.exe,前面是ffmpeg.exe的地址，中间是需要转换的文件地址，后面是转换后的文件地址。-i是转换方式，意思是可编码解码，mp3编码方式采用的是libmp3lame
@@ -130,7 +114,7 @@ public class VideoUtil {
             //mp3转pcm
             // Process p = run.exec(new File(webroot).getAbsolutePath() + "/ffmpeg -y -i " + sourcePath + " -acodec pcm_s16le -f s16le -ac 1 -ar 16000 " + targetPath);
             //16bit 单声道 48khz
-            final String command = FFMPEG_PATH + " -i " + audioInputPath + " -ar 48000 -ac 1 -acodec pcm_s16le " + audioOutputPath;
+            final String command = FFMPEG_PATH + " -i " + fileInputPath + " -ar 48000 -ac 1 -acodec pcm_s16le " + audioOutputPath;
             process = Runtime.getRuntime().exec(command);
             process.waitFor();
         } catch (final IOException e) {
@@ -229,22 +213,54 @@ public class VideoUtil {
     }
 
     /**
-     * 视频切割，精准切割，按视频段的开始时间，和起始时间切割
-     *
+     * 视频切割
      * @param videoInputPath
      * @param videoOutputPath
-     * @param startTime
-     * @param endTime
+     * @param FrequencyTime
      * @return
      * @throws Exception
      */
-    public static void mp4ToCut2(String videoInputPath, String videoOutputPath, String startTime, String endTime) throws Exception {
+    public static void mp4ToCut3(String videoInputPath, String videoOutputPath,int FrequencyTime) throws Exception {
+        int time=getVideoTime(videoInputPath);
+        int n=time/FrequencyTime;
+        int m=0;
+        String f=Integer.toString(FrequencyTime);
+        for(int i=0;i<n;i++)
+        {
+            String a=Integer.toString(m);
+            String b=null;
+            if(i<=9){
+                b="0"+i;
+            }else{
+                b=i+"";
+            }
+            mp4ToCut2(videoInputPath, videoOutputPath+"\\"+b+".mp4",a,f);
+            m+=FrequencyTime;
+        }
+            	/*
+            	String c=Integer.toString(n*FrequencyTime);
+            	String d=Integer.toString(time-n*FrequencyTime);
+            	mp4ToCut2(videoInputPath, videoOutputPath+"\\audio"+(n+1)+".mp4",c,d);
+            	*/
+    }
+
+
+    /**
+     * 视频切割，精准切割，按视频段的开始时间，和时间长度切割
+     * @param videoInputPath
+     * @param videoOutputPath
+     * @param startTime
+     * @param FrequencyTime
+     * @return
+     * @throws Exception
+     */
+    public static void mp4ToCut2(String videoInputPath, String videoOutputPath,String startTime,String FrequencyTime) throws Exception {
         Process process = null;
         try {
-            final String command = FFMPEG_PATH + " -i " + videoInputPath + " -ss " + startTime + " -to " + endTime + " -y " + videoOutputPath;
+            final String command =FFMPEG_PATH + " -ss "+startTime+" -t "+FrequencyTime + " -accurate_seek -i " + videoInputPath + " -codec copy -avoid_negative_ts 1 " + videoOutputPath;
             process = Runtime.getRuntime().exec(command);
             process.waitFor();
-        } catch (final IOException e) {
+        }catch (final IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -265,6 +281,7 @@ public class VideoUtil {
             errorStream.close();
         }
     }
+
 
     /**
      * 音频合并
