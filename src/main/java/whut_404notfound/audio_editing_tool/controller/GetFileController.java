@@ -3,7 +3,9 @@ package whut_404notfound.audio_editing_tool.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import whut_404notfound.audio_editing_tool.domain.Modify;
 import whut_404notfound.audio_editing_tool.domain.NonStaticResourceHttpRequestHandler;
 import whut_404notfound.audio_editing_tool.repository.ModifyRepository;
@@ -11,6 +13,9 @@ import whut_404notfound.audio_editing_tool.repository.ModifyRepository;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,18 +30,17 @@ import static whut_404notfound.audio_editing_tool.constant.Constant.SESSION_KEY_
  * @create 2021-04-14 23:24
  */
 @Controller
-public class GetVideoController {
-    private ModifyRepository modifyRepository;
-    private final NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler;
+public class GetFileController {
+//    private ModifyRepository modifyRepository;
+//    private final NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler;
+//
+//    public GetVideoController(ModifyRepository modifyRepository, NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler) {
+//        this.modifyRepository = modifyRepository;
+//        this.nonStaticResourceHttpRequestHandler = nonStaticResourceHttpRequestHandler;
+//    }
 
-    public GetVideoController(ModifyRepository modifyRepository, NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler) {
-        this.modifyRepository = modifyRepository;
-        this.nonStaticResourceHttpRequestHandler = nonStaticResourceHttpRequestHandler;
-    }
-
-    @GetMapping("/test")
-    public void videoPreview(@RequestBody Integer requestVideoPartId, HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) throws Exception {
-
+    @GetMapping("/getFileStream")
+    public void videoPreview(@RequestParam String imgUrl, HttpServletResponse resp) throws Exception {
         //假如我把视频1.mp4放在了static下的video文件夹里面
         //sourcePath 是获取resources文件夹的绝对地址
         //realPath 即是视频所在的磁盘地址
@@ -54,21 +58,52 @@ public class GetVideoController {
 //            //return new FileResponse(HttpServletResponse.SC_OK, "视频分片成功，具体信息见data",modify);
 //            realPath = videourl;
 //        }
-        String realPath="C:/Users/fch11/Desktop/外包/bb.mp4";
+        //String realPath = "C:/Users/fch11/Desktop/外包/bb.mp4";
+//
+//        Path filePath = Paths.get(realPath);
+//        if (Files.exists(filePath)) {
+//            String mimeType = Files.probeContentType(filePath);
+//            System.out.println(mimeType);
+//            if (!StringUtils.isEmpty(mimeType)) {
+//                response.setContentType(mimeType);
+//            }
+//            request.setAttribute(NonStaticResourceHttpRequestHandler.ATTR_FILE, filePath);
+//            nonStaticResourceHttpRequestHandler.handleRequest(request, response);
+//        } else {
+//            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+//            response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+//        }
+        //加载文件的位置"D:/upload/videoResources/29/00.mp4"
+        System.out.println(imgUrl);
+        File file = new File(imgUrl);
+        //resp.setCharacterEncoding("UTF-8");
+        resp.addHeader("Content-Length", "" + file.length());
+        //设置输出文件类型
+//        resp.setContentType("arraybuffer");
+        FileInputStream fis = null;
+        OutputStream os = null;
 
-        Path filePath = Paths.get(realPath);
-        if (Files.exists(filePath)) {
-            String mimeType = Files.probeContentType(filePath);
-            if (!StringUtils.isEmpty(mimeType)) {
-                response.setContentType(mimeType);
+        try {
+            os = resp.getOutputStream();
+            fis = new FileInputStream(file);
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = fis.read(buffer)) != -1) {
+                os.write(buffer, 0, len);
             }
-            request.setAttribute(NonStaticResourceHttpRequestHandler.ATTR_FILE, filePath);
-            nonStaticResourceHttpRequestHandler.handleRequest(request, response);
-        } else {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+        } catch (Exception e) {
+            if (null != fis) {
+                fis.close();
+            }
+            if (null != os) {
+                os.flush();
+                os.close();
+            }
         }
+
     }
+
+}
 
 //    @GetMapping("/getVideoPart")
 //    @ResponseBody
@@ -90,12 +125,9 @@ public class GetVideoController {
 //    }
 //    @RequestMapping(value = "getVideo")
 //    public void getVideo(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//
-//
-//
 //        File file = new File("e:/" + request.getParameter("name"));
 //        try (
-//                InputStream in = new FileInputStream(file); ServletOutputStream out = response.getOutputStream();) {
+//            InputStream in = new FileInputStream(file); ServletOutputStream out = response.getOutputStream();) {
 //            int length;
 //            byte[] buffer = new byte[in.available()];
 //            // 向前台输出视频流
@@ -141,4 +173,4 @@ public class GetVideoController {
 //        }
 //    }
 
-}
+

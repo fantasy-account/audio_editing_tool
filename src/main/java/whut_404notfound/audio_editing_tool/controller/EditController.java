@@ -31,10 +31,10 @@ public class EditController {
     @GetMapping("/edit")
     @ResponseBody
     public BaseResponse obtain(HttpSession httpSession){
-        //获取session中携带的视频id
-        Object value=httpSession.getAttribute(SESSION_KEY_VIDEO);
-        int videoId=Integer.parseInt(String.valueOf(value));
-
+//        //获取session中携带的视频id
+//        Object value=httpSession.getAttribute(SESSION_KEY_VIDEO);
+//        int videoId=Integer.parseInt(String.valueOf(value));
+        int videoId=19;
         List<Modify> modifyList=modifyRepository.findModifyByVideoId(videoId);
         if(!modifyList.isEmpty()){
             Modify modify=modifyList.get(0);
@@ -42,6 +42,6 @@ public class EditController {
             return new BaseResponse(HttpServletResponse.SC_OK, "视频分片成功，具体信息见data",modify);
         }
         // 状态码404
-        return new BaseResponse(HttpServletResponse.SC_NOT_FOUND, "数据库中查询不到视频分片信息");
+        return new BaseResponse(HttpServletResponse.SC_BAD_REQUEST, "数据库中查询不到视频分片信息");
     }
 }

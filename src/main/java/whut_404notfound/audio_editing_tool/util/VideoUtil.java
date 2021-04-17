@@ -114,7 +114,9 @@ public class VideoUtil {
             //mp3转pcm
             // Process p = run.exec(new File(webroot).getAbsolutePath() + "/ffmpeg -y -i " + sourcePath + " -acodec pcm_s16le -f s16le -ac 1 -ar 16000 " + targetPath);
             //16bit 单声道 48khz
-            final String command = FFMPEG_PATH + " -i " + fileInputPath + " -ar 48000 -ac 1 -acodec pcm_s16le " + audioOutputPath;
+           // final String command = FFMPEG_PATH + " -i " + fileInputPath + " -ar 48000 -ac 1 -acodec pcm_s16le " + audioOutputPath;
+            //16bit 单声道 16khz
+            final String command =FFMPEG_PATH + " -i " + fileInputPath + " -ac 1 -ar 16000 -ab 16 " + audioOutputPath;
             process = Runtime.getRuntime().exec(command);
             process.waitFor();
         } catch (final IOException e) {
@@ -138,6 +140,75 @@ public class VideoUtil {
             errorStream.close();
         }
     }
+    /**
+     * 多个视频合并
+     * @param videoInputPath
+     * @param videoOutputPath
+     * @return
+     * @throws Exception
+     */
+    public static Boolean mp4ToUnit2(final String[] videoInputPath,final String videoOutputPath) throws Exception {
+        Process process =null;
+        try {
+            for(int i=0;i<videoInputPath.length;i++)
+            {
+                int beginIndex=videoInputPath[i].length()-3;
+                int endIndex=videoInputPath[i].length();
+                videoInputPath[i]=videoInputPath[i].substring(0, beginIndex)+"ts";
+            }
+            String video="";
+            for(int i=0;i<videoInputPath.length;i++)
+            {
+                video+=videoInputPath[i]+"|";
+//
+//                video.concat(videoInputPath[i]);
+//                video.concat("|");
+            }
+            System.out.println(video);
+            final String command =FFMPEG_PATH + " -i \"concat:" + video+"\" -c copy -bsf:a aac_adtstoasc -movflags +faststart "+videoOutputPath;
+            process = Runtime.getRuntime().exec(command);
+            process.waitFor();
+        }catch (final IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+        }
+        // 使用这种方式会在瞬间大量消耗CPU和内存等系统资源，所以这里我们需要对流进行处理
+        final InputStream errorStream = process.getErrorStream();
+        final InputStreamReader inputStreamReader = new InputStreamReader(errorStream);
+        final BufferedReader br = new BufferedReader(inputStreamReader);
+        String line = "";
+        while ((line = br.readLine()) != null) {
+        }
+        if (br != null) {
+            br.close();
+        }
+        if (inputStreamReader != null) {
+            inputStreamReader.close();
+        }
+        if (errorStream != null) {
+            errorStream.close();
+        }
+        return true;
+    }
+    /**
+     * 多个视频格式转ts
+     * @param videoInputPath
+     * @return
+     * @throws Exception
+     */
+    public static void changeToTs2(final String[] videoInputPath) throws Exception {
+        for(int i=0;i<videoInputPath.length;i++)
+        {
+            int beginIndex=videoInputPath[i].length()-3;
+            //int endIndex=videoInputPath[i].length();
+            String videoOutputPath=videoInputPath[i].substring(0, beginIndex)+"ts";
+            System.out.println(videoOutputPath);
+            changeToTs(videoInputPath[i],videoOutputPath);
+        }
+
+    }
+
 
     /**
      * Wav音频文件转pcm格式

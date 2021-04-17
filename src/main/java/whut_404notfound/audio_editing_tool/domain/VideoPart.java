@@ -88,6 +88,27 @@ public class VideoPart implements Serializable {
 
     public void setImageUrl(String imageUrl) { this.imageUrl[num] = imageUrl; }
 
+    //下面五个setter定点放置modified对象
+    public void setStartTime(Integer index,Time startTime) {
+        this.startTime[index] = startTime;
+    }
+
+    public void setEndTime(Integer index,Time endTime) {
+        this.endTime[index] = endTime;
+    }
+
+    public void setContent(Integer index,String content) {
+        this.content[index] = content;
+    }
+
+    public void setVideoPartUrl(Integer index,String videoPartUrl) {
+        this.videoPartUrl[index] = videoPartUrl;
+    }
+
+    public void setImageUrl(Integer index,String imageUrl) {
+        this.imageUrl[index] = imageUrl;
+    }
+
     @Override
     public String toString() {
         return "VideoPart{" +

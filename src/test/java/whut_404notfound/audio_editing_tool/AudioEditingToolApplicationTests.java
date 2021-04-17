@@ -14,6 +14,7 @@ import whut_404notfound.audio_editing_tool.repository.ModifyRepository;
 import whut_404notfound.audio_editing_tool.repository.UserRepository;
 import whut_404notfound.audio_editing_tool.repository.VideoRepository;
 import whut_404notfound.audio_editing_tool.service.EditService;
+import whut_404notfound.audio_editing_tool.service.FinishAllService;
 import whut_404notfound.audio_editing_tool.service.UploadMp3Service;
 import whut_404notfound.audio_editing_tool.service.UploadService;
 import whut_404notfound.audio_editing_tool.util.Transform;
@@ -62,6 +63,8 @@ class AudioEditingToolApplicationTests {
     @Autowired
     private NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler;
 
+    @Autowired
+    private FinishAllService finishAllService;
     @Test
     void contextLoads() {
 //        System.out.println(dataSource.getClass());
@@ -152,32 +155,34 @@ class AudioEditingToolApplicationTests {
 //        String c="D:/upload/videoResources/09.mp4";
 //        String d="D:/upload/videoResources/09.wav";
 //        String e="D:/upload/01.mp4";
-        String f = "C:/Users/fch11/Desktop/chunks/b_0";//081.wav
+//        String f = "C:/Users/fch11/Desktop/chunks/b_0";//081.wav
         //VideoUtil.mp4ToCut1(c,"D:/upload/","10");
         //VideoUtil.changeFileToWav(e,f);
-        String sum = null;
-        String g = null;
-        String result = null;
-        Integer result1 = 0;
-        Integer result2 = 0;
-        for (int i = 0; i <= 133; i++) {
-            if (i <= 9) {
-                g = f + "00" + i + ".wav";
-            } else if (i <= 99) {
-                g = f + "0" + i + ".wav";
-            } else {
-                g = f + i + ".wav";
-            }
-            result = transform.Audio2Character(g, g);
-            result1 = result.indexOf(":[\"") + 3;
-            result2 = result.indexOf("\"],");
-            sum = sum + result.substring(result1, result2);
-        }
-        System.out.println(sum);
-//        String result=transform.Audio2Character(f, f);
+//        String sum = null;
+//        String g = null;
+//        String result = null;
+//        Integer result1 = 0;
+//        Integer result2 = 0;
+//        for (int i = 0; i <= 133; i++) {
+//            if (i <= 9) {
+//                g = f + "00" + i + ".wav";
+//            } else if (i <= 99) {
+//                g = f + "0" + i + ".wav";
+//            } else {
+//                g = f + i + ".wav";
+//            }
+//            result = transform.Audio2Character(g, g);
+//            result1 = result.indexOf(":[\"") + 3;
+//            result2 = result.indexOf("\"],");
+//            sum = sum + result.substring(result1, result2);
+//        }
+//        System.out.println(sum);
+        //VideoUtil.mp4ToCut3("D:/upload/videoResources/29/07.mp4","D:/upload/videoResources",10);
+        VideoUtil.changeFileToWav("D:/upload/videoResources/19/06.mp4","D:/upload/videoResources/06.wav");
+        String result=transform.Audio2Character("D:/upload/videoResources/06.wav", "D:/upload/videoResources/06.wav");
 //        Integer result1=result.indexOf(":[\"")+3;
 //        Integer result2=result.indexOf("\"],");
-//        System.out.println(result);
+        System.out.println(result);
 //        System.out.println(result1);
 //        System.out.println(result2);
 //        System.out.println(result.substring(result1, result2));
@@ -187,9 +192,10 @@ class AudioEditingToolApplicationTests {
 
     @Test
     void EditService() throws Exception{
+        System.out.println(modifyRepository.findModifyByVideoId(29));
         //editService.text2speech("将这段话转化成语音，替换掉原来视频中的语音",29,5);
         //以上测试成功，文件和数据库都完成了更新
-        uploadMp3Service.mergeMp3ToMp4(29,6,"D:/upload/videoResources/29/00.wav");
+        //uploadMp3Service.mergeMp3ToMp4(29,6,"D:/upload/videoResources/29/00.wav");
         //////////////////////////////////////////////////////////////////////////////////
 //        FileInputStream fis = null;
 //        InputStreamReader isr = null;
@@ -214,5 +220,10 @@ class AudioEditingToolApplicationTests {
 //        fis.close();
 
         //////////////////////////////////////////////////
+    }
+
+    @Test
+    void FinishAllTest(){
+        System.out.println(finishAllService.finish(20));
     }
 }

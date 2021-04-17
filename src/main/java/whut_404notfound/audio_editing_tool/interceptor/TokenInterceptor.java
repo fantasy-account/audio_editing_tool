@@ -26,7 +26,7 @@ public class TokenInterceptor implements HandlerInterceptor {
             ObjectMapper mapper = new ObjectMapper();
             response.getWriter().println(mapper.writeValueAsString(new BaseResponse<Void>(HttpServletResponse.SC_FORBIDDEN, "请先登录")));
             System.out.println("token为空");
-            return false;
+            return false;//这里本来是false
         } else if (!JsonWebTokenUtil.verifyTokenByHMAC(token, JWT_SECRET)) {
             response.setContentType("application/json;charset=UTF-8");
             ObjectMapper mapper = new ObjectMapper();

@@ -48,30 +48,11 @@ public class UploadService {
             System.out.println(videoRepository.updateVideo(videoId,duration,videoInputPath,videoOutputPath+"image.jpg"));
             System.out.println("video表数据导入完毕");
 
-            //int duration=434;
-            int part_num = duration / PART_DURATION;//7+1=8
+            int part_num = duration / PART_DURATION;
             VideoPart videoPart = new VideoPart(part_num);
             String result=null;
             Integer result1=0;
             Integer result2=0;
-//            //////////////////////////////////////////////////////////////////////////////////
-//            FileInputStream fis = null;
-//            InputStreamReader isr = null;
-//            BufferedReader br = null;
-//            String str = "";
-//            //String str1 = "";
-//            String[] str2 = new String[part_num];
-//            fis = new FileInputStream("D:/IntelliJ IDEA 2019.1/workspace/audio_editing_tool/src/input.txt");// FileInputStream
-//            // 从文件系统中的某个文件中获取字节
-//            isr = new InputStreamReader(fis);// InputStreamReader 是字节流通向字符流的桥梁,
-//            br = new BufferedReader(isr);// 从字符输入流中读取文件中的内容,封装了一个new InputStreamReader的对象
-//            for(int i=0;i<part_num;i++){
-//                if((str = br.readLine()) != null){
-//                    str2[i]=str;
-//                }
-//            }
-//
-//            //////////////////////////////////////////////////////////////////////////
             for (int i = 0; i < part_num; i++) {
                 int hh = i * PART_DURATION / 3600;
                 int mm = (i * PART_DURATION % 3600) / 60;
@@ -109,8 +90,6 @@ public class UploadService {
                 }catch (Exception e){
                     videoPart.setContent("在第"+i+"段语音转文字的时候出现了问题");
                 }
-
-                //videoPart.setContent(str2[i]);
                 videoPart.addNum();
             }
             System.out.println("这里已经生成好了，除了教师文字的视频片videoPart");
@@ -118,10 +97,6 @@ public class UploadService {
 
             System.out.println(modifyRepository.saveAndFlush(new Modify(videoId,userId,part_num,videoPart)));
             System.out.println("视频片对象保存完毕");
-
-//            List<Modify> modifyList=modifyRepository.findModifyByVideoId(videoId);
-//            System.out.println("从数据库中取，并打印");
-//            System.out.println(modifyList);
 
         } catch (Exception e) {
             System.out.println("uploadService出现问题");
