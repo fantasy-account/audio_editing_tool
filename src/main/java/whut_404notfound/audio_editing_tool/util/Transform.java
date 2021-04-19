@@ -1,8 +1,5 @@
 package whut_404notfound.audio_editing_tool.util;
 
-
-import com.baidu.aip.util.Base64Util;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
@@ -61,7 +58,7 @@ public class Transform {
         Transform transform=new Transform();
         try {
             transform.Character2Audio("操你妈了个逼","result2.wav");
-            System.out.println(transform.Audio2Character("result.wav", "writing.txt"));
+            System.out.println(transform.Audio2Character("result.wav"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (DemoException e) {
@@ -70,10 +67,16 @@ public class Transform {
             e.printStackTrace();
         }
     }
-    public String Audio2Character(String sourceFile,String destinationFile) throws IOException, DemoException, JSONException {
+    public String Audio2Character(String sourceFile) {
 
         TokenHolder holder = new TokenHolder(APP_KEY, SECRET_KEY, SCOPE);
-        holder.resfresh();
+        try {
+            holder.resfresh();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (DemoException e) {
+            e.printStackTrace();
+        }
         String token = holder.getToken();
         String result = null;
         /*if (METHOD_RAW) {
@@ -81,7 +84,13 @@ public class Transform {
         } else {
             result = runJsonPostMethod(token);
         }*/
-        result = runJsonPostMethod(token,sourceFile);
+        try {
+            result = runJsonPostMethod(token,sourceFile);
+        } catch (DemoException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 //        File file = new File(destinationFile);
 //        FileWriter fo = new FileWriter(file);

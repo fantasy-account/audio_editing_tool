@@ -6,6 +6,7 @@ import whut_404notfound.audio_editing_tool.domain.Modify;
 import whut_404notfound.audio_editing_tool.domain.VideoPart;
 import whut_404notfound.audio_editing_tool.repository.ModifyRepository;
 import whut_404notfound.audio_editing_tool.repository.VideoRepository;
+import whut_404notfound.audio_editing_tool.util.Transform;
 import whut_404notfound.audio_editing_tool.util.VideoUtil;
 
 import java.util.List;
@@ -24,6 +25,9 @@ public class UploadMp3Service {
     @Autowired
     private ModifyRepository modifyRepository;
 
+    @Autowired
+    private Transform transform;
+
     public String mergeMp3ToMp4(Integer videoId, Integer videoPartId, String mp3filePath) {
         List<Modify> modifyList = modifyRepository.findModifyByVideoId(videoId);
         if (!modifyList.isEmpty()) {
@@ -40,21 +44,21 @@ public class UploadMp3Service {
             //以上，完成了音频与视频的合并，下面开始更新数据库
             VideoPart modifiedPart = modify.getModifiedPart();
             if(modifiedPart!=null){//如果当前已经存在了更改片
-                modifiedPart.setVideoPartUrl(videoPartId,videoPartUrl.replace(".mp4","merged.mp4"));
-                modifiedPart.setContent(videoPartId,"该片段声音信息为用户自行上传的音频");
-                modifiedPart.setImageUrl(videoPartId,inclusivePart.getImageUrl()[videoPartId]);
-                modifiedPart.setStartTime(videoPartId,inclusivePart.getStartTime()[videoPartId]);
-                modifiedPart.setEndTime(videoPartId,inclusivePart.getEndTime()[videoPartId]);
+                modifiedPart.setVideoPartUrl(videoPartUrl.replace(".mp4","merged.mp4"));
+                modifiedPart.setContent(transform.Audio2Character(mp3filePath));
+                modifiedPart.setImageUrl(inclusivePart.getImageUrl()[videoPartId]);
+                modifiedPart.setStartTime(inclusivePart.getStartTime()[videoPartId]);
+                modifiedPart.setEndTime(inclusivePart.getEndTime()[videoPartId]);
                 modifiedPart.addNum();
                 modifyRepository.videoHasBeenModified(videoId,modify.getModifiedPartNum()+1,modify.getModifiedDuration()+VideoUtil.getVideoTime(videoPartUrl),modifiedPart);
                 //保存更新后的视频片对象
             }else{//不存在已经更改的时间片
                 VideoPart videoPart=new VideoPart(inclusivePart.getPartNum());
-                videoPart.setVideoPartUrl(videoPartId,videoPartUrl.replace(".mp4","merged.mp4"));
-                videoPart.setContent(videoPartId,"该片段声音信息为用户自行上传的音频");
-                videoPart.setStartTime(videoPartId,inclusivePart.getStartTime()[videoPartId]);
-                videoPart.setEndTime(videoPartId,inclusivePart.getEndTime()[videoPartId]);
-                videoPart.setImageUrl(videoPartId,inclusivePart.getImageUrl()[videoPartId]);
+                videoPart.setVideoPartUrl(videoPartUrl.replace(".mp4","merged.mp4"));
+                videoPart.setContent(transform.Audio2Character(mp3filePath));
+                videoPart.setStartTime(inclusivePart.getStartTime()[videoPartId]);
+                videoPart.setEndTime(inclusivePart.getEndTime()[videoPartId]);
+                videoPart.setImageUrl(inclusivePart.getImageUrl()[videoPartId]);
                 videoPart.addNum();
                 modifyRepository.videoHasBeenModified(videoId,1,VideoUtil.getVideoTime(videoPartUrl),videoPart);
             }

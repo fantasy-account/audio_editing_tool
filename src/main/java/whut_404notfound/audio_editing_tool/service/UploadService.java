@@ -8,12 +8,7 @@ import whut_404notfound.audio_editing_tool.repository.ModifyRepository;
 import whut_404notfound.audio_editing_tool.repository.VideoRepository;
 import whut_404notfound.audio_editing_tool.util.Transform;
 import whut_404notfound.audio_editing_tool.util.VideoUtil;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.sql.Time;
-import java.util.List;
 
 import static whut_404notfound.audio_editing_tool.constant.Constant.PART_DURATION;
 
@@ -82,7 +77,7 @@ public class UploadService {
                 videoPart.setImageUrl(videoOutputPath + n + ".jpg");
                 VideoUtil.changeFileToWav(videoOutputPath+n+".mp4",videoOutputPath+n+".wav");
 
-                result=transform.Audio2Character(videoOutputPath+n+".wav", videoOutputPath+n+".wav");
+                result=transform.Audio2Character(videoOutputPath+n+".wav");
                 try {
                     result1 = result.indexOf(":[\"") + 3;
                     result2 = result.indexOf("\"],");

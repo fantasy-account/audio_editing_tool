@@ -13,7 +13,7 @@ import java.io.*;
  */
 @Entity
 @Data
-public class Modify {
+public class Modify implements Serializable{
     @Id
     private Integer videoId;
     private Integer userId;

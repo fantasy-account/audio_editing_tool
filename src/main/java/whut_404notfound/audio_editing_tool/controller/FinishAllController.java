@@ -17,6 +17,7 @@ import static whut_404notfound.audio_editing_tool.constant.Constant.SESSION_KEY_
  * @description 用户提交了更改，合成视频并返回路径
  * @create 2021-04-17 13:28
  */
+@Deprecated
 @Controller
 public class FinishAllController {
 

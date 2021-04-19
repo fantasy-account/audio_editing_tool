@@ -32,9 +32,9 @@ public class EditController {
     @ResponseBody
     public BaseResponse obtain(HttpSession httpSession){
 //        //获取session中携带的视频id
-//        Object value=httpSession.getAttribute(SESSION_KEY_VIDEO);
-//        int videoId=Integer.parseInt(String.valueOf(value));
-        int videoId=19;
+        Object value=httpSession.getAttribute(SESSION_KEY_VIDEO);
+        int videoId=Integer.parseInt(String.valueOf(value));
+//        int videoId=19;
         List<Modify> modifyList=modifyRepository.findModifyByVideoId(videoId);
         if(!modifyList.isEmpty()){
             Modify modify=modifyList.get(0);

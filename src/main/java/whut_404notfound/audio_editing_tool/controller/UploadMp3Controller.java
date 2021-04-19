@@ -15,8 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 
-
-import static whut_404notfound.audio_editing_tool.constant.Constant.*;
+import static whut_404notfound.audio_editing_tool.constant.Constant.SESSION_KEY_VIDEO;
 import static whut_404notfound.audio_editing_tool.constant.Constant.SRC_FILE_SAVE_ROOT_PATH;
 
 /**
@@ -34,20 +33,20 @@ public class UploadMp3Controller {
     @ResponseBody
     public BaseResponse receiveFileFromBrowser(@RequestParam Integer currentIndex, @RequestBody MultipartFile file, HttpSession httpSession) throws IOException {
         if (!file.isEmpty()) {
-//            Object value = httpSession.getAttribute(SESSION_KEY_VIDEO);
-//            Integer videoId = Integer.parseInt(String.valueOf(value));
+            Object value = httpSession.getAttribute(SESSION_KEY_VIDEO);
+            Integer videoId = Integer.parseInt(String.valueOf(value));
             //以上两步是从session中获取视频的id
-Integer videoId=19;
-            String index=String.valueOf(currentIndex);
-            System.out.println("用户当前操作的分片编号是"+currentIndex);
-            if(currentIndex<10){
-                index="0"+currentIndex;
+//            Integer videoId = 19;
+            String index = String.valueOf(currentIndex);
+            System.out.println("用户当前操作的分片编号是" + currentIndex);
+            if (currentIndex < 10) {
+                index = "0" + currentIndex;
             }
             String mp3SavePath = SRC_FILE_SAVE_ROOT_PATH + videoId + "/" + index + "uploaded.mp3";
             File saveFile = new File(mp3SavePath);
             file.transferTo(saveFile);
 
-            System.out.println("用户上传的语音保存的位置是："+mp3SavePath);
+            System.out.println("用户上传的语音保存的位置是：" + mp3SavePath);
             String s = uploadMp3Service.mergeMp3ToMp4(videoId, currentIndex, mp3SavePath);
             if (s != null) {
                 System.out.println("用户上传声音已经和视频合并，合并结果为" + s);

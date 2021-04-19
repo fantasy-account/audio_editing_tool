@@ -6,13 +6,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import whut_404notfound.audio_editing_tool.domain.BaseResponse;
 import whut_404notfound.audio_editing_tool.service.EditService;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 
 import static whut_404notfound.audio_editing_tool.constant.Constant.SESSION_KEY_VIDEO;
 

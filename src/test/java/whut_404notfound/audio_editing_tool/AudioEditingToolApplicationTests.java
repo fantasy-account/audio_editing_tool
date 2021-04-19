@@ -1,38 +1,28 @@
 package whut_404notfound.audio_editing_tool;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import whut_404notfound.audio_editing_tool.domain.Modify;
-import whut_404notfound.audio_editing_tool.domain.NonStaticResourceHttpRequestHandler;
+import whut_404notfound.audio_editing_tool.domain.Statistics;
 import whut_404notfound.audio_editing_tool.domain.Video;
 import whut_404notfound.audio_editing_tool.domain.VideoPart;
 import whut_404notfound.audio_editing_tool.repository.ModifyRepository;
 import whut_404notfound.audio_editing_tool.repository.UserRepository;
 import whut_404notfound.audio_editing_tool.repository.VideoRepository;
-import whut_404notfound.audio_editing_tool.service.EditService;
-import whut_404notfound.audio_editing_tool.service.FinishAllService;
-import whut_404notfound.audio_editing_tool.service.UploadMp3Service;
-import whut_404notfound.audio_editing_tool.service.UploadService;
+import whut_404notfound.audio_editing_tool.service.*;
 import whut_404notfound.audio_editing_tool.util.Transform;
 import whut_404notfound.audio_editing_tool.util.VideoUtil;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
 import javax.sql.DataSource;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.Principal;
 import java.sql.Time;
-import java.util.*;
-
-import static whut_404notfound.audio_editing_tool.constant.Constant.SESSION_KEY_VIDEO;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @SpringBootTest
@@ -60,11 +50,10 @@ class AudioEditingToolApplicationTests {
     @Autowired
     private UploadMp3Service uploadMp3Service;
 
-    @Autowired
-    private NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler;
 
     @Autowired
     private FinishAllService finishAllService;
+
     @Test
     void contextLoads() {
 //        System.out.println(dataSource.getClass());
@@ -179,7 +168,7 @@ class AudioEditingToolApplicationTests {
 //        System.out.println(sum);
         //VideoUtil.mp4ToCut3("D:/upload/videoResources/29/07.mp4","D:/upload/videoResources",10);
         VideoUtil.changeFileToWav("D:/upload/videoResources/19/06.mp4","D:/upload/videoResources/06.wav");
-        String result=transform.Audio2Character("D:/upload/videoResources/06.wav", "D:/upload/videoResources/06.wav");
+        String result=transform.Audio2Character("D:/upload/videoResources/06.wav");
 //        Integer result1=result.indexOf(":[\"")+3;
 //        Integer result2=result.indexOf("\"],");
         System.out.println(result);
@@ -222,8 +211,126 @@ class AudioEditingToolApplicationTests {
         //////////////////////////////////////////////////
     }
 
+    @Autowired
+    private EchartsService echartsService;
     @Test
     void FinishAllTest(){
         System.out.println(finishAllService.finish(20));
     }
+
+    @Test
+    void searchTest(){
+//        Date time1 = new Date(2020,3,20,0,0,0);
+//        Date time2 = new Date(2022,4,20,0,0,0);
+//        System.out.println(time1);
+//        System.out.println(time2);
+        List<Map<String,Object>>dbList=modifyRepository.findAllStatistics();
+        List<Object> video_id = dbList.stream().map(map -> map.get("video_id")).collect(Collectors.toList());
+        List<Object> video_name = dbList.stream().map(map -> map.get("video_name")).collect(Collectors.toList());
+        List<Object> user_id = dbList.stream().map(map -> map.get("user_id")).collect(Collectors.toList());
+        List<Object> user_name = dbList.stream().map(map -> map.get("user_name")).collect(Collectors.toList());
+        List<Object> add_time = dbList.stream().map(map -> map.get("add_time")).collect(Collectors.toList());
+        List<Object> part_num = dbList.stream().map(map -> map.get("part_num")).collect(Collectors.toList());
+        List<Object> modified_part_num = dbList.stream().map(map -> map.get("modified_part_num")).collect(Collectors.toList());
+        List<Object> modified_duration = dbList.stream().map(map -> map.get("modified_duration")).collect(Collectors.toList());
+        List<Object> inclusive_part = dbList.stream().map(map -> map.get("inclusive_part")).collect(Collectors.toList());
+        List<Object> modified_part = dbList.stream().map(map -> map.get("modified_part")).collect(Collectors.toList());
+
+
+//        Statistics sta1=new Statistics(video_id.get(1),video_name.get(1),user_id.get(1),user_name.get(1),part_num.get(1),modified_part_num.get(1),modified_duration.get(1),inclusive_part.get(1),modified_part.get(1));
+//        System.out.println(sta1);
+        List<Statistics> sta = new ArrayList<>();
+        for(int i=0;i<user_id.size();i++){
+            sta.add(new Statistics(video_id.get(i),video_name.get(i),user_id.get(i),user_name.get(i),add_time.get(i),part_num.get(i),modified_part_num.get(i),modified_duration.get(i),inclusive_part.get(i),modified_part.get(i)));
+        }
+        for(int i=0;i<sta.size();i++){
+            System.out.println(sta.get(i));
+        }
+//        System.out.println(dbList);
+        // 键值集合
+//        Set keySet=dbList.get(0).keySet();
+        //[video_name, part_num, inclusive_part, user_id,user_name,
+        // modified_part, modified_part_num, video_id, modified_duration]
+
+        //找出所有老师姓名
+//        List<String> userNameList=dbList.stream().map(map-> (String) map.get("user_name")).collect(Collectors.toList());
+
+//        //获得每个老师修改过的视频总和
+//        userNameList.stream().map(userName->{
+//            dbList.stream().filter(map->map.get("user_name").equals(userName));
+//        });
+    }
+
+    @Test
+    void searchTestByTime(){
+
+        List<Map<String,Object>>dbList=modifyRepository.findStatisticsByTime("2020-3-1","2022-4-1");
+        List<Object> video_id = dbList.stream().map(map -> map.get("video_id")).collect(Collectors.toList());
+        List<Object> video_name = dbList.stream().map(map -> map.get("video_name")).collect(Collectors.toList());
+        List<Object> user_id = dbList.stream().map(map -> map.get("user_id")).collect(Collectors.toList());
+        List<Object> user_name = dbList.stream().map(map -> map.get("user_name")).collect(Collectors.toList());
+        List<Object> add_time = dbList.stream().map(map -> map.get("add_time")).collect(Collectors.toList());
+        List<Object> part_num = dbList.stream().map(map -> map.get("part_num")).collect(Collectors.toList());
+        List<Object> modified_part_num = dbList.stream().map(map -> map.get("modified_part_num")).collect(Collectors.toList());
+        List<Object> modified_duration = dbList.stream().map(map -> map.get("modified_duration")).collect(Collectors.toList());
+        List<Object> inclusive_part = dbList.stream().map(map -> map.get("inclusive_part")).collect(Collectors.toList());
+        List<Object> modified_part = dbList.stream().map(map -> map.get("modified_part")).collect(Collectors.toList());
+
+        List<Statistics> sta = new ArrayList<>();
+        for(int i=0;i<user_id.size();i++){
+            sta.add(new Statistics(video_id.get(i),video_name.get(i),user_id.get(i),user_name.get(i),add_time.get(i),part_num.get(i),modified_part_num.get(i),modified_duration.get(i),inclusive_part.get(i),modified_part.get(i)));
+        }
+        for(int i=0;i<sta.size();i++){
+            System.out.println(sta.get(i).getAddTime().toString());
+            System.out.println(sta.get(i).getAddTime().toString().substring(5,10));
+        }
+
+    }
+
+    @Test
+    void freshDateBase(){
+//        for(int i=1;i<=100;i++){
+//            Modify modify = modifyRepository.findModifyByVideoId(i).get(0);
+//            VideoPart videoPart=new VideoPart(modify.getPartNum());//空间申请完毕
+//
+//            for(int j=0;j<modify.getPartNum();j++){
+//                videoPart.setPartNum(modify.getPartNum());
+//                Time a=new Time(j);
+//                videoPart.setStartTime(a);
+//                Time b=new Time(j+1);
+//                videoPart.setEndTime(b);
+//                videoPart.setImageUrl("视频id为"+i+"的，第"+j+"个视频片段的封面图片");
+//                videoPart.setVideoPartUrl("视频id为"+i+"的，第"+j+"个视频片段的保存路径");
+//                videoPart.setContent("视频id为"+i+"的，第"+j+"个视频片段的文本信息");
+//                videoPart.addNum();
+//            }
+//            modifyRepository.videoHasBeenModified1(i,videoPart);
+//            if(modify.getModifiedPartNum()==0){
+//                continue;
+//            }
+//
+//            VideoPart modifiedVideoPart=new VideoPart(modify.getPartNum());//空间申请完毕
+//            for(int j=0;j<modify.getModifiedPartNum();j++){
+//                modifiedVideoPart.setPartNum(modify.getPartNum());
+//                Time a=new Time(j);
+//                modifiedVideoPart.setStartTime(a);
+//                Time b=new Time(j+1);
+//                modifiedVideoPart.setEndTime(b);
+//                modifiedVideoPart.setImageUrl("视频id为"+i+"的，第"+j+"个被修改的视频片段的封面图片");
+//                modifiedVideoPart.setVideoPartUrl("视频id为"+i+"的，第"+j+"个被修改的视频片段的保存路径");
+//                modifiedVideoPart.setContent("视频id为"+i+"的，第"+j+"个被修改的视频片段的文本信息");
+//                modifiedVideoPart.addNum();
+//            }
+//            modifyRepository.videoHasBeenModified2(i,modifiedVideoPart);
+//
+//        }
+        System.out.println(modifyRepository.findModifyByVideoId(20).get(0));
+        System.out.println(modifyRepository.findModifyByVideoId(28).get(0));
+    }
+
+    @Test
+    void echartsTest(){
+        echartsService.searchService("2021-4-1","2021-4-20");
+    }
+
 }
