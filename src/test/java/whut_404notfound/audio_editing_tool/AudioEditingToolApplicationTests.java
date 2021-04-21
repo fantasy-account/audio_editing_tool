@@ -18,11 +18,10 @@ import whut_404notfound.audio_editing_tool.util.VideoUtil;
 import javax.sql.DataSource;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static whut_404notfound.audio_editing_tool.constant.Constant.SRC_FILE_SAVE_ROOT_PATH;
 
 
 @SpringBootTest
@@ -181,35 +180,61 @@ class AudioEditingToolApplicationTests {
 
     @Test
     void EditService() throws Exception{
-        System.out.println(modifyRepository.findModifyByVideoId(29));
+        int videoId=118;
+        List<Modify> modifyList=modifyRepository.findModifyByVideoId(videoId);
+        if(!modifyList.isEmpty()) {
+            Modify modify = modifyList.get(0);
+            System.out.println("从数据库中获取到的原始信息是" + modify);
+
+            String[] videoPartUrl = modify.getInclusivePart().getVideoPartUrl();
+            String[] videoPartUrl1 = modify.getModifiedPart().getVideoPartUrl();
+
+            List<Integer> listmap=new ArrayList<>();
+            for(int i=0;i<modify.getModifiedPartNum();i++){
+                int a=videoPartUrl1[i].lastIndexOf('/');
+//                System.out.println(a);
+                int b=videoPartUrl1[i].indexOf("merged.mp4");
+//                System.out.println(b);
+                String s=videoPartUrl1[i].substring(a+1,b);
+                int num=Integer.parseInt(s);
+//                System.out.println(num);
+                listmap.add(num);
+            }
+
+            String[] allUrl = new String[modify.getPartNum()];
+            int j=0;
+            for(int i=0;i<modify.getPartNum();i++){
+                if(listmap.contains(i)){
+                    allUrl[i]=videoPartUrl1[j++];
+                }else{
+                    allUrl[i]=videoPartUrl[i];
+                }
+            }
+
+            for(int i=0;i<modify.getPartNum();i++){
+                System.out.println(allUrl[i]);
+            }
+
+            String finalVideoUrl=SRC_FILE_SAVE_ROOT_PATH +videoId+"/finalVideo.mp4";
+            System.out.println(finalVideoUrl);
+            //执行合并
+            try {
+                VideoUtil.changeToTs2(allUrl);
+                if (VideoUtil.mp4ToUnit2(allUrl,finalVideoUrl)) {
+                    System.out.println(finalVideoUrl);
+
+                    System.out.println("总视频合成完毕，链接是"+finalVideoUrl);
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
         //editService.text2speech("将这段话转化成语音，替换掉原来视频中的语音",29,5);
         //以上测试成功，文件和数据库都完成了更新
         //uploadMp3Service.mergeMp3ToMp4(29,6,"D:/upload/videoResources/29/00.wav");
-        //////////////////////////////////////////////////////////////////////////////////
-//        FileInputStream fis = null;
-//        InputStreamReader isr = null;
-//        BufferedReader br = null;
-//        String str = "";
-//        //String str1 = "";
-//        String[] str2 = new String[14];
-//        fis = new FileInputStream("D:/IntelliJ IDEA 2019.1/workspace/audio_editing_tool/src/input.txt");// FileInputStream
-//        // 从文件系统中的某个文件中获取字节
-//        isr = new InputStreamReader(fis);// InputStreamReader 是字节流通向字符流的桥梁,
-//        br = new BufferedReader(isr);// 从字符输入流中读取文件中的内容,封装了一个new InputStreamReader的对象
-//        for(int i=0;i<14;i++){
-//            if((str = br.readLine()) != null){
-//                str2[i]=str;
-//            }
-//        }for(int i=0;i<14;i++){
-//            System.out.println(str2[i]);
-//        }
-//
-//        br.close();
-//        isr.close();
-//        fis.close();
-
-        //////////////////////////////////////////////////
-    }
 
     @Autowired
     private EchartsService echartsService;

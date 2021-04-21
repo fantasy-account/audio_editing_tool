@@ -45,7 +45,7 @@ public class UploadMp3Service {
             VideoPart modifiedPart = modify.getModifiedPart();
             if(modifiedPart!=null){//如果当前已经存在了更改片
                 modifiedPart.setVideoPartUrl(videoPartUrl.replace(".mp4","merged.mp4"));
-                modifiedPart.setContent(transform.Audio2Character(mp3filePath));
+                modifiedPart.setContent("该片段音频为用户自行上传的声音或文件");
                 modifiedPart.setImageUrl(inclusivePart.getImageUrl()[videoPartId]);
                 modifiedPart.setStartTime(inclusivePart.getStartTime()[videoPartId]);
                 modifiedPart.setEndTime(inclusivePart.getEndTime()[videoPartId]);
@@ -55,14 +55,14 @@ public class UploadMp3Service {
             }else{//不存在已经更改的时间片
                 VideoPart videoPart=new VideoPart(inclusivePart.getPartNum());
                 videoPart.setVideoPartUrl(videoPartUrl.replace(".mp4","merged.mp4"));
-                videoPart.setContent(transform.Audio2Character(mp3filePath));
+                videoPart.setContent("该片段音频为用户自行上传的声音或文件");
                 videoPart.setStartTime(inclusivePart.getStartTime()[videoPartId]);
                 videoPart.setEndTime(inclusivePart.getEndTime()[videoPartId]);
                 videoPart.setImageUrl(inclusivePart.getImageUrl()[videoPartId]);
                 videoPart.addNum();
                 modifyRepository.videoHasBeenModified(videoId,1,VideoUtil.getVideoTime(videoPartUrl),videoPart);
             }
-            System.out.println("修改后的信息是"+modifyRepository.findModifyByVideoId(videoId).get(0));
+            System.out.println("上传的音频文件合并后，修改后的信息是"+modifyRepository.findModifyByVideoId(videoId).get(0));
             return videoPartUrl.replace(".mp4","merged.mp4");
         }
         return null;

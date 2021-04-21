@@ -28,11 +28,12 @@ public class GetFileController {
     @GetMapping("/getFileStream")
     public void videoPreview(@RequestParam String url, HttpServletResponse resp, HttpSession httpSession) throws Exception {
         System.out.println(url);
-        if (url == null) {
+        if (url.equals("success")) {
             Object value = httpSession.getAttribute(SESSION_KEY_VIDEO);
             Integer videoId = Integer.parseInt(String.valueOf(value));
             url = finishAllService.finish(videoId);//合并视频后，把视频链接给它
             System.out.println("视频合成后得到的地址是：" + url);
+//            url="D:/upload/videoResources/101/01.mp4";
         }
         File file = new File(url);
         //resp.setCharacterEncoding("UTF-8");

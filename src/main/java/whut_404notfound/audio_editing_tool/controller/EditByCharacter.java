@@ -29,7 +29,10 @@ public class EditByCharacter {
     public BaseResponse receiveFileFromBrowser(@RequestParam Integer videoPartId, @RequestBody String text, HttpSession httpSession){
         Object value = httpSession.getAttribute(SESSION_KEY_VIDEO);
         Integer videoId = Integer.parseInt(String.valueOf(value));
-        if (editService.text2speech(text, videoId, videoPartId) != null) {
+        System.out.println("文字转语音，视频编号是"+videoId);
+        System.out.println("文字转语音"+text);
+        if (editService.text2speech(text.substring(8), videoId, videoPartId) != null) {
+            System.out.println("文本转化语音替换成功");
             return new BaseResponse(HttpServletResponse.SC_OK, "文本转化语音替换成功");
         }
         return new BaseResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "文本转化语音替换失败");

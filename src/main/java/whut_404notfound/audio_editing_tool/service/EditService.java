@@ -65,7 +65,7 @@ public class EditService {
                 videoPart.addNum();
                 modifyRepository.videoHasBeenModified(videoId,1,VideoUtil.getVideoTime(videoPartUrl),videoPart);
             }
-            System.out.println("修改后的信息是"+modifyRepository.findModifyByVideoId(videoId).get(0));
+            System.out.println("文字转语音修改后的信息是"+modifyRepository.findModifyByVideoId(videoId).get(0));
             return videoPartUrl.replace(".mp4","merged.mp4");
         }
         return null;
