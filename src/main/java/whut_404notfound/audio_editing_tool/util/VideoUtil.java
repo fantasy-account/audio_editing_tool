@@ -6,7 +6,7 @@ package whut_404notfound.audio_editing_tool.util;
  * @create 2021-03-18 17:07
  */
 /*
-* 视频音频合并convetor(final String videoInputPath, final String audioInputPath, final String videoOutPath)
+ * 视频音频合并convetor(final String videoInputPath, final String audioInputPath, final String videoOutPath)
  * 音频文件转wav格式 changeFileToWav(final String audioInputPath, final String audioOutputPath)
  * Wav音频文件转pcm格式changeWavToPcm(final String audioInputPath, final String audioOutputPath)
  * 按频率视频切割mp4ToCut1(String videoInputPath, String videoOutputPath,String frequencyTime)
@@ -100,6 +100,7 @@ public class VideoUtil {
 
     /**
      * 音频文件转wav格式
+     *
      * @param fileInputPath
      * @param audioOutputPath
      * @return
@@ -114,9 +115,9 @@ public class VideoUtil {
             //mp3转pcm
             // Process p = run.exec(new File(webroot).getAbsolutePath() + "/ffmpeg -y -i " + sourcePath + " -acodec pcm_s16le -f s16le -ac 1 -ar 16000 " + targetPath);
             //16bit 单声道 48khz
-           // final String command = FFMPEG_PATH + " -i " + fileInputPath + " -ar 48000 -ac 1 -acodec pcm_s16le " + audioOutputPath;
+            // final String command = FFMPEG_PATH + " -i " + fileInputPath + " -ar 48000 -ac 1 -acodec pcm_s16le " + audioOutputPath;
             //16bit 单声道 16khz
-            final String command =FFMPEG_PATH + " -i " + fileInputPath + " -ac 1 -ar 16000 -ab 16 " + audioOutputPath;
+            final String command = FFMPEG_PATH + " -i " + fileInputPath + " -ac 1 -ar 16000 -ab 16 " + audioOutputPath;
             process = Runtime.getRuntime().exec(command);
             process.waitFor();
         } catch (final IOException e) {
@@ -140,71 +141,86 @@ public class VideoUtil {
             errorStream.close();
         }
     }
+
     /**
      * 多个视频合并
+     *
      * @param videoInputPath
      * @param videoOutputPath
      * @return
      * @throws Exception
      */
-    public static Boolean mp4ToUnit2(final String[] videoInputPath,final String videoOutputPath) throws Exception {
-        Process process =null;
+    public static Boolean mp4ToUnit2(final String[] videoInputPath, final String videoOutputPath) throws Exception {
+        Process process = null;
         try {
-            for(int i=0;i<videoInputPath.length;i++)
-            {
-                int beginIndex=videoInputPath[i].length()-3;
-                int endIndex=videoInputPath[i].length();
-                videoInputPath[i]=videoInputPath[i].substring(0, beginIndex)+"ts";
+            for (int i = 0; i < videoInputPath.length; i++) {
+                int beginIndex = videoInputPath[i].length() - 3;
+                int endIndex = videoInputPath[i].length();
+                videoInputPath[i] = videoInputPath[i].substring(0, beginIndex) + "ts";
             }
-            String video="";
-            for(int i=0;i<videoInputPath.length;i++)
-            {
-                video+=videoInputPath[i]+"|";
+            String video = videoInputPath[0];
+            for (int i = 1; i < videoInputPath.length; i++) {
+                video += "|" + videoInputPath[i];
 //
 //                video.concat(videoInputPath[i]);
 //                video.concat("|");
             }
             System.out.println(video);
-            final String command =FFMPEG_PATH + " -i \"concat:" + video+"\" -c copy -bsf:a aac_adtstoasc -movflags +faststart "+videoOutputPath;
+            final String command = FFMPEG_PATH + " -i \"concat:" + video + "\" -acodec copy -vcodec copy -absf aac_adtstoasc " + videoOutputPath;
+            System.out.println(command);
+            String line = "";
             process = Runtime.getRuntime().exec(command);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+
             process.waitFor();
-        }catch (final IOException e) {
+//            process = Runtime.getRuntime().exec(command);
+//            while(Thread.activeCount() > 2){
+//                Thread.yield();
+//            }
+//            process.waitFor();
+        } catch (final IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return false;
         }
+
         // 使用这种方式会在瞬间大量消耗CPU和内存等系统资源，所以这里我们需要对流进行处理
-        final InputStream errorStream = process.getErrorStream();
-        final InputStreamReader inputStreamReader = new InputStreamReader(errorStream);
-        final BufferedReader br = new BufferedReader(inputStreamReader);
-        String line = "";
-        while ((line = br.readLine()) != null) {
-        }
-        if (br != null) {
-            br.close();
-        }
-        if (inputStreamReader != null) {
-            inputStreamReader.close();
-        }
-        if (errorStream != null) {
-            errorStream.close();
-        }
+//        final InputStream errorStream = process.getErrorStream();
+//        final InputStreamReader inputStreamReader = new InputStreamReader(errorStream);
+//        final BufferedReader br = new BufferedReader(inputStreamReader);
+//        String line = "";
+//        while ((line = br.readLine()) != null) {
+//        }
+//        if (br != null) {
+//            br.close();
+//        }
+//        if (inputStreamReader != null) {
+//            inputStreamReader.close();
+//        }
+//        if (errorStream != null) {
+//            errorStream.close();
+//        }
         return true;
     }
+
     /**
      * 多个视频格式转ts
+     *
      * @param videoInputPath
      * @return
      * @throws Exception
      */
     public static void changeToTs2(final String[] videoInputPath) throws Exception {
-        for(int i=0;i<videoInputPath.length;i++)
-        {
-            int beginIndex=videoInputPath[i].length()-3;
+        for (int i = 0; i < videoInputPath.length; i++) {
+            int beginIndex = videoInputPath[i].length() - 3;
             //int endIndex=videoInputPath[i].length();
-            String videoOutputPath=videoInputPath[i].substring(0, beginIndex)+"ts";
+            String videoOutputPath = videoInputPath[i].substring(0, beginIndex) + "ts";
             System.out.println(videoOutputPath);
-            changeToTs(videoInputPath[i],videoOutputPath);
+            changeToTs(videoInputPath[i], videoOutputPath);
         }
 
     }
@@ -285,28 +301,28 @@ public class VideoUtil {
 
     /**
      * 视频切割
+     *
      * @param videoInputPath
      * @param videoOutputPath
      * @param FrequencyTime
      * @return
      * @throws Exception
      */
-    public static void mp4ToCut3(String videoInputPath, String videoOutputPath,int FrequencyTime) throws Exception {
-        int time=getVideoTime(videoInputPath);
-        int n=time/FrequencyTime;
-        int m=0;
-        String f=Integer.toString(FrequencyTime);
-        for(int i=0;i<n;i++)
-        {
-            String a=Integer.toString(m);
-            String b=null;
-            if(i<=9){
-                b="0"+i;
-            }else{
-                b=i+"";
+    public static void mp4ToCut3(String videoInputPath, String videoOutputPath, int FrequencyTime) throws Exception {
+        int time = getVideoTime(videoInputPath);
+        int n = time / FrequencyTime;
+        int m = 0;
+        String f = Integer.toString(FrequencyTime);
+        for (int i = 0; i < n; i++) {
+            String a = Integer.toString(m);
+            String b = null;
+            if (i <= 9) {
+                b = "0" + i;
+            } else {
+                b = i + "";
             }
-            mp4ToCut2(videoInputPath, videoOutputPath+"\\"+b+".mp4",a,f);
-            m+=FrequencyTime;
+            mp4ToCut2(videoInputPath, videoOutputPath + "\\" + b + ".mp4", a, f);
+            m += FrequencyTime;
         }
             	/*
             	String c=Integer.toString(n*FrequencyTime);
@@ -318,6 +334,7 @@ public class VideoUtil {
 
     /**
      * 视频切割，精准切割，按视频段的开始时间，和时间长度切割
+     *
      * @param videoInputPath
      * @param videoOutputPath
      * @param startTime
@@ -325,13 +342,13 @@ public class VideoUtil {
      * @return
      * @throws Exception
      */
-    public static void mp4ToCut2(String videoInputPath, String videoOutputPath,String startTime,String FrequencyTime) throws Exception {
+    public static void mp4ToCut2(String videoInputPath, String videoOutputPath, String startTime, String FrequencyTime) throws Exception {
         Process process = null;
         try {
-            final String command =FFMPEG_PATH + " -ss "+startTime+" -t "+FrequencyTime + " -accurate_seek -i " + videoInputPath + " -codec copy -avoid_negative_ts 1 " + videoOutputPath;
+            final String command = FFMPEG_PATH + " -ss " + startTime + " -t " + FrequencyTime + " -accurate_seek -i " + videoInputPath + " -codec copy -avoid_negative_ts 1 " + videoOutputPath;
             process = Runtime.getRuntime().exec(command);
             process.waitFor();
-        }catch (final IOException e) {
+        } catch (final IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -416,21 +433,21 @@ public class VideoUtil {
             e.printStackTrace();
         }
         // 使用这种方式会在瞬间大量消耗CPU和内存等系统资源，所以这里我们需要对流进行处理
-        final InputStream errorStream = process.getErrorStream();
-        final InputStreamReader inputStreamReader = new InputStreamReader(errorStream);
-        final BufferedReader br = new BufferedReader(inputStreamReader);
-        String line = "";
-        while ((line = br.readLine()) != null) {
-        }
-        if (br != null) {
-            br.close();
-        }
-        if (inputStreamReader != null) {
-            inputStreamReader.close();
-        }
-        if (errorStream != null) {
-            errorStream.close();
-        }
+//        final InputStream errorStream = process.getErrorStream();
+//        final InputStreamReader inputStreamReader = new InputStreamReader(errorStream);
+//        final BufferedReader br = new BufferedReader(inputStreamReader);
+//        String line = "";
+//        while ((line = br.readLine()) != null) {
+//        }
+//        if (br != null) {
+//            br.close();
+//        }
+//        if (inputStreamReader != null) {
+//            inputStreamReader.close();
+//        }
+//        if (errorStream != null) {
+//            errorStream.close();
+//        }
     }
 
     /**
@@ -529,6 +546,7 @@ public class VideoUtil {
     /**
      * 获取视频总时间
      * *@param videoInputPath
+     *
      * @return
      * @throws Exception
      */
@@ -565,7 +583,6 @@ public class VideoUtil {
         }
         return null;
     }
-
 
 
 //    public static void main(final String[] args){

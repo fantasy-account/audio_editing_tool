@@ -180,7 +180,7 @@ class AudioEditingToolApplicationTests {
 
     @Test
     void EditService() throws Exception{
-        int videoId=118;
+        int videoId=119;
         List<Modify> modifyList=modifyRepository.findModifyByVideoId(videoId);
         if(!modifyList.isEmpty()) {
             Modify modify = modifyList.get(0);
@@ -216,15 +216,14 @@ class AudioEditingToolApplicationTests {
             }
 
             String finalVideoUrl=SRC_FILE_SAVE_ROOT_PATH +videoId+"/finalVideo.mp4";
-            System.out.println(finalVideoUrl);
+//            System.out.println(finalVideoUrl);
+//            VideoUtil.mp4ToUnit2(allUrl,finalVideoUrl);
             //执行合并
             try {
                 VideoUtil.changeToTs2(allUrl);
                 if (VideoUtil.mp4ToUnit2(allUrl,finalVideoUrl)) {
                     System.out.println(finalVideoUrl);
-
                     System.out.println("总视频合成完毕，链接是"+finalVideoUrl);
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
