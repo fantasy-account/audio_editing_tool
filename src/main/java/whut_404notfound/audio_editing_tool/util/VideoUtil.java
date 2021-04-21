@@ -177,33 +177,28 @@ public class VideoUtil {
             }
 
             process.waitFor();
-//            process = Runtime.getRuntime().exec(command);
-//            while(Thread.activeCount() > 2){
-//                Thread.yield();
-//            }
-//            process.waitFor();
         } catch (final IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return false;
         }
 
-        // 使用这种方式会在瞬间大量消耗CPU和内存等系统资源，所以这里我们需要对流进行处理
-//        final InputStream errorStream = process.getErrorStream();
-//        final InputStreamReader inputStreamReader = new InputStreamReader(errorStream);
-//        final BufferedReader br = new BufferedReader(inputStreamReader);
-//        String line = "";
-//        while ((line = br.readLine()) != null) {
-//        }
-//        if (br != null) {
-//            br.close();
-//        }
-//        if (inputStreamReader != null) {
-//            inputStreamReader.close();
-//        }
-//        if (errorStream != null) {
-//            errorStream.close();
-//        }
+//         使用这种方式会在瞬间大量消耗CPU和内存等系统资源，所以这里我们需要对流进行处理
+        final InputStream errorStream = process.getErrorStream();
+        final InputStreamReader inputStreamReader = new InputStreamReader(errorStream);
+        final BufferedReader br = new BufferedReader(inputStreamReader);
+        String line = "";
+        while ((line = br.readLine()) != null) {
+        }
+        if (br != null) {
+            br.close();
+        }
+        if (inputStreamReader != null) {
+            inputStreamReader.close();
+        }
+        if (errorStream != null) {
+            errorStream.close();
+        }
         return true;
     }
 

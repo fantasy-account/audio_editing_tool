@@ -189,6 +189,7 @@ class AudioEditingToolApplicationTests {
             String[] videoPartUrl = modify.getInclusivePart().getVideoPartUrl();
             String[] videoPartUrl1 = modify.getModifiedPart().getVideoPartUrl();
 
+            HashMap<Integer,String> listhash=new HashMap<>();
             List<Integer> listmap=new ArrayList<>();
             for(int i=0;i<modify.getModifiedPartNum();i++){
                 int a=videoPartUrl1[i].lastIndexOf('/');
@@ -198,15 +199,20 @@ class AudioEditingToolApplicationTests {
                 String s=videoPartUrl1[i].substring(a+1,b);
                 int num=Integer.parseInt(s);
 //                System.out.println(num);
+                listhash.put(num,videoPartUrl1[i]);
                 listmap.add(num);
             }
 
             String[] allUrl = new String[modify.getPartNum()];
             int j=0;
             for(int i=0;i<modify.getPartNum();i++){
-                if(listmap.contains(i)){
-                    allUrl[i]=videoPartUrl1[j++];
-                }else{
+                if(listhash.containsKey(i)){
+                    allUrl[i]=listhash.get(i);
+                }
+//                if(listmap.contains(i)){
+//                    allUrl[i]=videoPartUrl1[j++];
+//                }
+                else{
                     allUrl[i]=videoPartUrl[i];
                 }
             }
@@ -220,11 +226,11 @@ class AudioEditingToolApplicationTests {
 //            VideoUtil.mp4ToUnit2(allUrl,finalVideoUrl);
             //执行合并
             try {
-                VideoUtil.changeToTs2(allUrl);
-                if (VideoUtil.mp4ToUnit2(allUrl,finalVideoUrl)) {
-                    System.out.println(finalVideoUrl);
-                    System.out.println("总视频合成完毕，链接是"+finalVideoUrl);
-                }
+//                VideoUtil.changeToTs2(allUrl);
+//                if (VideoUtil.mp4ToUnit2(allUrl,finalVideoUrl)) {
+//                    System.out.println(finalVideoUrl);
+//                    System.out.println("总视频合成完毕，链接是"+finalVideoUrl);
+//                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -8,6 +8,7 @@ import whut_404notfound.audio_editing_tool.repository.ModifyRepository;
 import whut_404notfound.audio_editing_tool.util.VideoUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static whut_404notfound.audio_editing_tool.constant.Constant.SRC_FILE_SAVE_ROOT_PATH;
@@ -31,7 +32,8 @@ public class FinishAllService {
             String[] videoPartUrl = modify.getInclusivePart().getVideoPartUrl();
             String[] videoPartUrl1 = modify.getModifiedPart().getVideoPartUrl();
 
-            List<Integer> listmap=new ArrayList<>();
+            HashMap<Integer,String> listhash=new HashMap<>();
+            //List<Integer> listmap=new ArrayList<>();
             for(int i=0;i<modify.getModifiedPartNum();i++){
                 int a=videoPartUrl1[i].lastIndexOf('/');
 //                System.out.println(a);
@@ -40,15 +42,20 @@ public class FinishAllService {
                 String s=videoPartUrl1[i].substring(a+1,b);
                 int num=Integer.parseInt(s);
 //                System.out.println(num);
-                listmap.add(num);
+                listhash.put(num,videoPartUrl1[i]);
+//                listmap.add(num);
             }
 
             String[] allUrl = new String[modify.getPartNum()];
             int j=0;
             for(int i=0;i<modify.getPartNum();i++){
-                if(listmap.contains(i)){
-                    allUrl[i]=videoPartUrl1[j++];
-                }else{
+                if(listhash.containsKey(i)){
+                    allUrl[i]=listhash.get(i);
+                }
+//                if(listmap.contains(i)){
+//                    allUrl[i]=videoPartUrl1[j++];
+//                }
+                else{
                     allUrl[i]=videoPartUrl[i];
                 }
             }
